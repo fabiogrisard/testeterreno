@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Terrenos - Versão Melhorada</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #007BFF;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h2 {
+            color: #0056b3;
+            margin-top: 30px;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 8px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="url"], input[type="number"], select, textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        button.success {
+            background-color: #28a745;
+        }
+        button.success:hover {
+            background-color: #218838;
+        }
+        button.danger {
+            background-color: #dc3545;
+        }
+        button.danger:hover {
+            background-color: #c82333;
+        }
+        button.small {
+            padding: 6px 12px;
+            font-size: 14px;
+            margin-top: 0;
+            margin-left: 8px;
+        }
+        img.logo {
+            display: block;
+            width: 150px;
+            margin: 0 auto 20px;
+        }
+        .page {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        #mapCentral, #mapTerreno {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .pac-input {
+            background-color: #fff;
+            font-family: Roboto, Arial;
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 12px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+        }
+        .pac-input:focus {
+            border-color: #4d90fe;
+        }
+        .field-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .field-row > input,
+        .field-row > textarea {
+            flex: 1;
+        }
+        .image-capture-section {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 15px;
+        }
+        .capture-methods {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .capture-methods button {
+            margin-top: 0;
+            flex: 1;
+            min-width: 180px;
+        }
+        .drop-zone {
+            border: 2px dashed #007BFF;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            margin-top: 10px;
+        }
+        .drop-zone.dragover {
+            background-color: #e3f2fd;
+            border-color: #0056b3;
+        }
+        .drop-zone p {
+            margin: 5px 0;
+        }
+        #imagePreview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        #imagePreview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .preview-container {
+            position: relative;
+            display: inline-block;
+        }
+        .preview-container .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .last-data-info {
+            background: #e8f5e9;
+            border: 1px solid #81c784;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+        }
+        .last-data-info strong {
+            color: #2e7d32;
+        }
+        .last-data-info .detail {
+            font-size: 14px;
+            color: #555;
+            margin-top: 4px;
+        }
+        .auto-fill-badge {
+            display: inline-block;
+            background: #007BFF;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .history-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-item:hover {
+            background-color: #f0f7ff;
+        }
+        .history-item .info {
+            flex: 1;
+        }
+        .history-item .info strong {
+            color: #007BFF;
+        }
+        .history-item .info small {
+            color: #888;
+            display: block;
+            margin-top: 2px;
+        }
+        .history-item .actions {
+            display: flex;
+            gap: 6px;
+        }
+        .history-item .actions button {
+            margin: 0;
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+        .crop-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .crop-overlay.active {
+            display: flex;
+        }
+        .crop-canvas-wrapper {
+            position: relative;
+            max-width: 95%;
+            max-height: 80%;
+        }
+        .crop-canvas-wrapper canvas {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+        }
+        .crop-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .crop-instructions {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .validation-error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+        .validation-error.show {
+            display: block;
+        }
+        .field-group {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 15px;
+        }
+        .status-message {
+            padding: 10px 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="https://raw.githubusercontent.com/fabiogrisard/addcasa/refs/heads/main/logoexatanovo.JPG" alt="Logotipo">
+
+        <!-- Página 1: Configuração -->
+        <div id="page1" class="page active">
+            <h1>Formulário de Terrenos</h1>
+            <form id="configForm">
+                <label for="planilhaNome">Selecione a Planilha:</label>
+                <select id="planilhaNome" name="planilhaNome" required>
+                    <option value="">Carregando...</option>
+                </select>
+
+                <label for="folderId">ID da Pasta no Google Drive:</label>
+                <input type="text" id="folderId" name="folderId" required>
+
+                <label for="spreadsheetId">ID da Planilha no Google Sheets:</label>
+                <input type="text" id="spreadsheetId" name="spreadsheetId" required>
+
+                <label for="centralLocation">Localização Central da Cidade:</label>
+                <input type="text" id="centralLocation" name="centralLocation" required placeholder="lat,lng">
+                <div class="hint">Clique no mapa ou pesquise um endereço para definir a localização central.</div>
+
+                <div id="mapCentral"></div>
+
+                <button type="button" onclick="goToPage2()">Próxima Página</button>
+            </form>
+        </div>
+
+        <!-- Página 2: Inserção de Dados -->
+        <div id="page2" class="page">
+            <h1>Inserção de Dados do Terreno</h1>
+
+            <button type="button" class="secondary" onclick="goToPage1()" style="margin-bottom:15px;">← Voltar para Configuração</button>
+
+            <!-- Informação do último dado inserido -->
+            <div id="lastDataInfo" class="last-data-info" style="display:none;">
+                <strong>Último dado inserido:</strong>
+                <div id="lastDataDetail" class="detail"></div>
+            </div>
+
+            <!-- Histórico de dados -->
+            <div class="field-group">
+                <h2 style="margin-top:0;">Histórico de Dados Inseridos</h2>
+                <button type="button" class="secondary small" onclick="loadHistoryFromSheet()">🔄 Atualizar Histórico</button>
+                <div id="historyList" class="history-list">
+                    <div style="padding:14px;color:#888;text-align:center;">Clique em "Atualizar Histórico" para carregar os dados da planilha.</div>
+                </div>
+            </div>
+
+            <form id="dataForm">
+                <div class="field-group">
+                    <h2 style="margin-top:0;">Dados do Terreno</h2>
+
+                    <label for="numeroDado">Número do Terreno:
+                        <span id="autoFillBadge" class="auto-fill-badge" style="display:none;">Auto-preenchido</span>
+                    </label>
+                    <input type="text" id="numeroDado" name="numeroDado" required placeholder="Ex: 001">
+                    <div class="hint">Pré-preenchido automaticamente com base no último dado da planilha. Editável se necessário.</div>
+                    <div id="errorNumeroDado" class="validation-error">Informe o número do terreno.</div>
+                </div>
+
+                <label for="link">Link do Anúncio:</label>
+                <div class="field-row">
+                    <input type="url" id="link" name="link" placeholder="https://...">
+                    <button type="button" class="small secondary" onclick="pasteFromClipboard('link')">Colar Texto</button>
+                </div>
+                <div id="errorLink" class="validation-error">Preencha o link ou as informações do imóvel.</div>
+
+                <label for="infoImovel">Informações do Imóvel:</label>
+                <div class="field-row">
+                    <textarea id="infoImovel" name="infoImovel"></textarea>
+                    <button type="button" class="small secondary" onclick="pasteFromClipboard('infoImovel')">Colar Texto</button>
+                </div>
+
+                <label for="coordenadas">Coordenadas:</label>
+                <input type="text" id="coordenadas" name="coordenadas" required placeholder="lat,lng">
+                <div class="hint">Clique no mapa, pesquise um endereço ou use sua localização atual.</div>
+                <div id="errorCoordenadas" class="validation-error">Informe coordenadas válidas (formato: lat,lng).</div>
+
+                <div id="mapTerreno"></div>
+                <button type="button" class="secondary" onclick="getCurrentLocation()">📍 Localizar Minha Posição</button>
+
+                <label for="tipoRua">Tipo de Rua:</label>
+                <select id="tipoRua" name="tipoRua" required>
+                    <option value="3">Rua de Asfalto</option>
+                    <option value="1">Rua de Chão</option>
+                    <option value="2">Rua de Calçamento</option>
+                </select>
+
+                <label for="esquina">É esquina?</label>
+                <select id="esquina" name="esquina" required>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                </select>
+
+                <label for="vocacao">Vocação do Terreno:</label>
+                <select id="vocacao" name="vocacao" required>
+                    <option value="1">Residencial</option>
+                    <option value="2">Comercial Pólo Secundário</option>
+                    <option value="3">Comercial Pólo Primário</option>
+                </select>
+                </div>
+
+                <!-- Seção de Captura de Imagem -->
+                <div class="field-group">
+                    <h2 style="margin-top:0;">Captura de Imagem</h2>
+                    <p style="color:#666;font-size:14px;margin-top:0;">Escolha um dos três métodos para capturar a imagem do terreno:</p>
+
+                    <div class="capture-methods">
+                        <button type="button" class="success" onclick="startScreenCapture()">A) Print Screen + Recorte (Ctrl+Shift+X)</button>
+                        <button type="button" onclick="document.getElementById('fileUpload').click()">B) Upload de Arquivo (Drag & Drop)</button>
+                        <button type="button" class="secondary" onclick="focusPasteZone()">C) Colar da Clipboard (Ctrl+V)</button>
+                    </div>
+
+                    <input type="file" id="fileUpload" accept="image/*" style="display:none;" onchange="handleFileUpload(event)">
+
+                    <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileUpload').click()">
+                        <p><strong>📁 Arraste uma imagem aqui</strong></p>
+                        <p>ou clique para selecionar um arquivo</p>
+                        <p style="font-size:12px;color:#aaa;">Também é possível colar com Ctrl+V (Windows+Shift+S)</p>
+                    </div>
+
+                    <div id="imagePreview" style="display:none;">
+                        <p style="font-weight:bold;color:#28a745;">✓ Imagem capturada:</p>
+                        <div class="preview-container">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button type="button" class="remove-btn" onclick="clearImage()" title="Remover imagem">×</button>
+                        </div>
+                    </div>
+
+                    <div id="captureStatus" class="status-message" style="margin-top:10px;"></div>
+                </div>
+
+                <button type="submit" class="success" id="submitBtn">Enviar Dados</button>
+                <div id="submitStatus" class="status-message" style="margin-top:10px;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overlay do editor de recorte -->
+    <div id="cropOverlay" class="crop-overlay">
+        <div class="crop-instructions">Selecione a área da imagem que deseja recortar, depois clique em "Confirmar Recorte".</div>
+        <div class="crop-canvas-wrapper">
+            <canvas id="cropCanvas"></canvas>
+        </div>
+        <div class="crop-controls">
+            <button type="button" class="success" onclick="confirmCrop()">✓ Confirmar Recorte</button>
+            <button type="button" class="secondary" onclick="resetCropSelection()">↺ Limpar Seleção</button>
+            <button type="button" class="danger" onclick="cancelCrop()">✕ Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== Variáveis globais =====
+        let capturedImageBlob = null;
+        let capturedImageDataURL = null;
+        let cropImageData = null;
+        let cropSelection = { startX: 0, startY: 0, endX: 0, endY: 0, isDrawing: false, hasSelection: false };
+        let mapTerrenoInstance = null;
+        let terrenoMarkers = [];
+        let lastSheetData = [];
+        let isEditing = false;
+        let editingRowNumber = null;
+
+        // ===== Inicialização =====
+        window.onload = function() {
+            loadPlanilhas();
+            initMapCentral();
+            initMapTerreno();
+            setupPasteListener();
+            setupKeyboardShortcuts();
+            setupDragAndDrop();
+        };
+
+        // ===== Carregar planilhas disponíveis =====
+        function loadPlanilhas() {
+            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRuuja7Tveui7EINl-hHXdHtK9JI8qLnx4bELPAtRQcstNNzN0PMt7_KfsSjuuubl40xLUWaGzyl1AY/pub?gid=0&single=true&output=csv';
+
+            fetch(url)
+                .then(response => response.text())
+                .then(csv => {
+                    const linhas = csv.split('\n').filter(l => l.trim());
+                    const select = document.getElementById('planilhaNome');
+                    select.innerHTML = '';
+
+                    if (linhas.length === 0) {
+                        select.innerHTML = '<option value="">Nenhuma planilha encontrada</option>';
+                        return;
+                    }
+
+                    linhas.forEach(linha => {
+                        const colunas = parseCSVLine(linha);
+                        if (colunas.length >= 3) {
+                            const nome = colunas[0].trim();
+                            const folderId = colunas[1].trim();
+                            const spreadsheetId = colunas[2].trim();
+
+                            const option = document.createElement('option');
+                            option.value = folderId + ',' + spreadsheetId;
+                            option.textContent = nome;
+                            select.appendChild(option);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar planilhas:', error);
+                    const select = document.getElementById('planilhaNome');
+                    select.innerHTML = '<option value="">Erro ao carregar</option>';
+                });
+        }
+
+        // Parser simples de CSV (lida com aspas)
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        // Ao selecionar planilha, preencher IDs
+        document.getElementById('planilhaNome').addEventListener('change', function() {
+            const parts = this.value.split(',');
+            document.getElementById('folderId').value = parts[0] || '';
+            document.getElementById('spreadsheetId').value = parts[1] || '';
+        });
+
+        // ===== Navegação entre páginas =====
+        function goToPage2() {
+            const folderId = document.getElementById('folderId').value;
+            const spreadsheetId = document.getElementById('spreadsheetId').value;
+            const centralLocation = document.getElementById('centralLocation').value;
+
+            if (!folderId || !spreadsheetId || !centralLocation) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            localStorage.setItem('folderId', folderId);
+            localStorage.setItem('spreadsheetId', spreadsheetId);
+            localStorage.setItem('centralLocation', centralLocation);
+
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+
+            // Carregar último dado e pré-preencher número
+            fetchLastRowAndPrefill();
+        }
+
+        function goToPage1() {
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('page1').classList.add('active');
+        }
+
+        // ===== Rastreamento automático: ler última linha da planilha =====
+        function fetchLastRowAndPrefill() {
+            const spreadsheetId = localStorage.getItem('spreadsheetId');
+            if (!spreadsheetId) {
+                console.warn('SpreadsheetId não definido.');
+                return;
+            }
+
+            showCaptureStatus('info', '<span class="loading-spinner"></span>Buscando último dado da planilha...');
+
+            // Tenta ler via CSV publicado (gid=0 é a primeira aba)
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=csv&gid=0&t=' + Date.now();
+
+            fetch(csvUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Falha ao buscar planilha');
+                    return response.text();
+                })
+                .then(csv => {
+                    parseSheetData(csv);
+                })
+                .catch(err => {
+                    console.error('Erro ao buscar planilha:', err);
+                    // Tenta via webhook n8n como alternativa
+                    fetchLastRowViaWebhook();
+                });
+        }
+
+        function fetchLastRowViaWebhook() {
+            const spreadsheetId = localStorage.getItem('spreadsheetId');
+            fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook/getlastterreno', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ spreadsheetId: spreadsheetId, action: 'getLast' })
+            })
+            .then(() => {
+                // no-cors impede ler a resposta; apenas informa
+                showCaptureStatus('info', 'Não foi possível ler a planilha diretamente. Informe o número manualmente.');
+            })
+            .catch(err => {
+                console.error('Erro webhook:', err);
+                showCaptureStatus('info', 'Não foi possível ler a planilha diretamente. Informe o número manualmente.');
+            });
+        }
+
+        function parseSheetData(csv) {
+            const linhas = csv.split('\n').filter(l => l.trim());
+            lastSheetData = [];
+
+            if (linhas.length < 2) {
+                showCaptureStatus('info', 'Planilha vazia. Começando com o número 001.');
+                prefillNumeroDado('001');
+                return;
+            }
+
+            // Primeira linha é cabeçalho
+            const headers = parseCSVLine(linhas[0]);
+
+            for (let i = 1; i < linhas.length; i++) {
+                const cols = parseCSVLine(linhas[i]);
+                const row = {};
+                headers.forEach((h, idx) => {
+                    row[h.trim()] = (cols[idx] || '').trim();
+                });
+                row._raw = cols;
+                row._rowIndex = i;
+                lastSheetData.push(row);
+            }
+
+            if (lastSheetData.length === 0) {
+                prefillNumeroDado('001');
+                showCaptureStatus('info', 'Nenhum dado encontrado. Começando com 001.');
+                return;
+            }
+
+            const lastRow = lastSheetData[lastSheetData.length - 1];
+
+            // Mostrar último dado inserido
+            displayLastData(lastRow);
+
+            // Pré-preencher próximo número
+            const lastNumero = lastRow['numeroDado'] || lastRow['Numero'] || lastRow['numero'] || lastRow._raw[0] || '0';
+            const nextNumero = calculateNextNumber(lastNumero);
+            prefillNumeroDado(nextNumero);
+
+            // Renderizar histórico
+            renderHistory();
+
+            showCaptureStatus('success', 'Último dado carregado. Número pré-preenchido: ' + nextNumero);
+            setTimeout(() => clearCaptureStatus(), 4000);
+        }
+
+        function calculateNextNumber(lastNumero) {
+            // Tenta extrair parte numérica
+            const match = String(lastNumero).match(/(\d+)/);
+            if (match) {
+                const num = parseInt(match[1], 10);
+                const padded = String(num + 1).padStart(String(lastNumero).match(/\d+/)[0].length, '0');
+                // Preserva prefixo/sufixo se houver
+                const prefix = String(lastNumero).substring(0, match.index);
+                const suffix = String(lastNumero).substring(match.index + match[0].length);
+                return prefix + padded + suffix;
+            }
+            // Se não for numérico, tenta incrementar como número direto
+            const asNum = parseInt(lastNumero, 10);
+            if (!isNaN(asNum)) {
+                return String(asNum + 1).padStart(String(lastNumero).length, '0');
+            }
+            return '001';
+        }
+
+        function prefillNumeroDado(value) {
+            const field = document.getElementById('numeroDado');
+            field.value = value;
+            document.getElementById('autoFillBadge').style.display = 'inline-block';
+
+            // Remove badge quando o usuário edita
+            field.addEventListener('input', function onInput() {
+                document.getElementById('autoFillBadge').style.display = 'none';
+                field.removeEventListener('input', onInput);
+            }, { once: true });
+        }
+
+        function displayLastData(row) {
+            const infoDiv = document.getElementById('lastDataInfo');
+            const detailDiv = document.getElementById('lastDataDetail');
+
+            const numero = row['numeroDado'] || row['Numero'] || row['numero'] || row._raw[0] || 'N/A';
+            const link = row['link'] || row['Link'] || row._raw[1] || '';
+            const coords = row['coordenadas'] || row['Coordenadas'] || row._raw[3] || '';
+            const info = row['infoImovel'] || row['InfoImovel'] || row._raw[2] || '';
+
+            let html = 'Número: <strong>' + escapeHtml(numero) + '</strong>';
+            if (link) html += ' | Link: <a href="' + escapeHtml(link) + '" target="_blank" style="color:#007BFF;">Abrir anúncio</a>';
+            if (coords) html += ' | Coordenadas: ' + escapeHtml(coords);
+            if (info) html += '<br><small>' + escapeHtml(info.substring(0, 100)) + (info.length > 100 ? '...' : '') + '</small>';
+
+            detailDiv.innerHTML = html;
+            infoDiv.style.display = 'block';
+        }
+
+        function renderHistory() {
+            const listDiv = document.getElementById('historyList');
+
+            if (lastSheetData.length === 0) {
+                listDiv.innerHTML = '<div style="padding:14px;color:#888;text-align:center;">Nenhum dado encontrado na planilha.</div>';
+                return;
+            }
+
+            listDiv.innerHTML = '';
+            // Mostra os últimos 20 em ordem reversa
+            const recent = lastSheetData.slice(-20).reverse();
+
+            recent.forEach(row => {
+                const numero = row['numeroDado'] || row['Numero'] || row['numero'] || row._raw[0] || 'N/A';
+                const link = row['link'] || row['Link'] || row._raw[1] || '';
+                const coords = row['coordenadas'] || row['Coordenadas'] || row._raw[3] || '';
+
+                const item = document.createElement('div');
+                item.className = 'history-item';
+
+                const info = document.createElement('div');
+                info.className = 'info';
+                info.innerHTML = '<strong>' + escapeHtml(numero) + '</strong>' +
+                    (coords ? '<small>Coordenadas: ' + escapeHtml(coords) + '</small>' : '<small>Sem coordenadas</small>');
+
+                const actions = document.createElement('div');
+                actions.className = 'actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'secondary';
+                editBtn.textContent = 'Editar';
+                editBtn.onclick = function() { loadRowForEdit(row); };
+
+                const openBtn = document.createElement('button');
+                openBtn.className = 'success';
+                openBtn.textContent = 'Abrir Link';
+                openBtn.onclick = function() {
+                    if (link) window.open(link, '_blank');
+                };
+
+                actions.appendChild(editBtn);
+                actions.appendChild(openBtn);
+
+                item.appendChild(info);
+                item.appendChild(actions);
+                listDiv.appendChild(item);
+            });
+        }
+
+        function loadHistoryFromSheet() {
+            fetchLastRowAndPrefill();
+        }
+
+        function loadRowForEdit(row) {
+            isEditing = true;
+            editingRowNumber = row['numeroDado'] || row['Numero'] || row['numero'] || row._raw[0] || null;
+
+            document.getElementById('numeroDado').value = row['numeroDado'] || row['Numero'] || row._raw[0] || '';
+            document.getElementById('link').value = row['link'] || row['Link'] || row._raw[1] || '';
+            document.getElementById('infoImovel').value = row['infoImovel'] || row['InfoImovel'] || row._raw[2] || '';
+            document.getElementById('coordenadas').value = row['coordenadas'] || row['Coordenadas'] || row._raw[3] || '';
+
+            if (row['tipoRua'] || row._raw[4]) {
+                document.getElementById('tipoRua').value = row['tipoRua'] || row._raw[4] || '3';
+            }
+            if (row['esquina'] || row._raw[5]) {
+                document.getElementById('esquina').value = row['esquina'] || row._raw[5] || '0';
+            }
+            if (row['vocacao'] || row._raw[6]) {
+                document.getElementById('vocacao').value = row['vocacao'] || row._raw[6] || '1';
+            }
+
+            document.getElementById('autoFillBadge').style.display = 'none';
+            document.getElementById('submitBtn').textContent = 'Atualizar Dado';
+
+            // Atualizar mapa se houver coordenadas
+            const coords = row['coordenadas'] || row['Coordenadas'] || row._raw[3] || '';
+            if (coords && coords.includes(',')) {
+                updateTerrenoMap(coords);
+            }
+
+            // Scroll para o formulário
+            document.getElementById('dataForm').scrollIntoView({ behavior: 'smooth' });
+            showCaptureStatus('info', 'Editando dado número: ' + editingRowNumber + '. Altere os campos e clique em "Atualizar Dado".');
+        }
+
+        // ===== Validação =====
+        function validateForm() {
+            let valid = true;
+
+            // Esconder todos os erros
+            document.querySelectorAll('.validation-error').forEach(el => el.classList.remove('show'));
+
+            const numeroDado = document.getElementById('numeroDado').value.trim();
+            if (!numeroDado) {
+                document.getElementById('errorNumeroDado').classList.add('show');
+                valid = false;
+            }
+
+            const link = document.getElementById('link').value.trim();
+            const infoImovel = document.getElementById('infoImovel').value.trim();
+            if (!link && !infoImovel) {
+                document.getElementById('errorLink').classList.add('show');
+                valid = false;
+            }
+
+            const coordenadas = document.getElementById('coordenadas').value.trim();
+            if (!coordenadas) {
+                document.getElementById('errorCoordenadas').classList.add('show');
+                valid = false;
+            } else {
+                const parts = coordenadas.split(',');
+                if (parts.length !== 2 || isNaN(parseFloat(parts[0])) || isNaN(parseFloat(parts[1]))) {
+                    document.getElementById('errorCoordenadas').classList.add('show');
+                    valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        // ===== Envio do formulário =====
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                showSubmitStatus('error', 'Corrija os campos destacados antes de enviar.');
+                return;
+            }
+
+            const numeroDado = document.getElementById('numeroDado').value;
+            const link = document.getElementById('link').value;
+            const infoImovel = document.getElementById('infoImovel').value;
+            const coordenadas = document.getElementById('coordenadas').value;
+            const tipoRua = document.getElementById('tipoRua').value;
+            const esquina = document.getElementById('esquina').value;
+            const vocacao = document.getElementById('vocacao').value;
+            const centralLocation = localStorage.getItem('centralLocation');
+            const folderId = localStorage.getItem('folderId');
+            const spreadsheetId = localStorage.getItem('spreadsheetId');
+
+            const distancia = calcularDistancia(centralLocation, coordenadas);
+
+            const dadosParaEnviar = {
+                folderId: folderId,
+                spreadsheetId: spreadsheetId,
+                numeroDado: numeroDado,
+                link: link,
+                infoImovel: infoImovel,
+                coordenadas: coordenadas,
+                tipoRua: parseInt(tipoRua),
+                esquina: parseInt(esquina),
+                vocacao: parseInt(vocacao),
+                distancia: distancia.toFixed(2),
+                isEditing: isEditing,
+                editingRowNumber: editingRowNumber,
+                hasImage: capturedImageBlob !== null
+            };
+
+            // Se há imagem, converter para base64 e incluir
+            if (capturedImageDataURL) {
+                dadosParaEnviar.imagem = capturedImageDataURL;
+                dadosParaEnviar.imagemNome = 'terreno_' + numeroDado + '.png';
+            }
+
+            // Desabilitar botão durante envio
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            showSubmitStatus('info', '<span class="loading-spinner"></span>Enviando dados...');
+
+            fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook/addterreno', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosParaEnviar)
+            })
+            .then(response => {
+                showSubmitStatus('success', 'Dados enviados com sucesso!');
+                resetFormAfterSubmit();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                showSubmitStatus('error', 'Erro ao enviar os dados. Tente novamente.');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                if (isEditing) {
+                    submitBtn.textContent = 'Atualizar Dado';
+                } else {
+                    submitBtn.textContent = 'Enviar Dados';
+                }
+            });
+        });
+
+        function resetFormAfterSubmit() {
+            // Limpar imagem
+            clearImage();
+
+            // Se estava editando, resetar flag
+            if (isEditing) {
+                isEditing = false;
+                editingRowNumber = null;
+                document.getElementById('submitBtn').textContent = 'Enviar Dados';
+            }
+
+            // Recarregar último dado e pré-preencher próximo número
+            setTimeout(() => {
+                fetchLastRowAndPrefill();
+            }, 1500);
+        }
+
+        // ===== Cálculo de distância =====
+        function calcularDistancia(centralLocation, coordenadas) {
+            const parts1 = centralLocation.split(',').map(Number);
+            const parts2 = coordenadas.split(',').map(Number);
+            const lat1 = parts1[0];
+            const lon1 = parts1[1];
+            const lat2 = parts2[0];
+            const lon2 = parts2[1];
+
+            if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+                return 0;
+            }
+
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // ===== Mapa Central =====
+        function initMapCentral() {
+            const mapCentral = new google.maps.Map(document.getElementById('mapCentral'), {
+                center: { lat: -25.394552444520578, lng: -51.4582512931166 },
+                zoom: 13,
+            });
+
+            const input = document.createElement('input');
+            input.id = 'pac-input-central';
+            input.className = 'pac-input';
+            input.type = 'text';
+            input.placeholder = 'Pesquisar endereço';
+            mapCentral.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            const searchBox = new google.maps.places.SearchBox(input);
+            mapCentral.addListener('bounds_changed', () => {
+                searchBox.setBounds(mapCentral.getBounds());
+            });
+
+            let markers = [];
+            searchBox.addListener('places_changed', () => {
+                const places = searchBox.getPlaces();
+                if (places.length === 0) return;
+                markers.forEach(m => m.setMap(null));
+                markers = [];
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach(place => {
+                    if (!place.geometry || !place.geometry.location) return;
+                    markers.push(new google.maps.Marker({
+                        map: mapCentral,
+                        title: place.name,
+                        position: place.geometry.location,
+                    }));
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                    document.getElementById('centralLocation').value =
+                        place.geometry.location.lat() + ',' + place.geometry.location.lng();
+                });
+                mapCentral.fitBounds(bounds);
+            });
+
+            mapCentral.addListener('click', (mapsMouseEvent) => {
+                const coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
+                document.getElementById('centralLocation').value = coords;
+            });
+        }
+
+        // ===== Mapa Terreno =====
+        function initMapTerreno() {
+            mapTerrenoInstance = new google.maps.Map(document.getElementById('mapTerreno'), {
+                center: { lat: -25.394552444520578, lng: -51.4582512931166 },
+                zoom: 13,
+            });
+
+            const input = document.createElement('input');
+            input.id = 'pac-input-terreno';
+            input.className = 'pac-input';
+            input.type = 'text';
+            input.placeholder = 'Pesquisar endereço';
+            mapTerrenoInstance.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            const searchBox = new google.maps.places.SearchBox(input);
+            mapTerrenoInstance.addListener('bounds_changed', () => {
+                searchBox.setBounds(mapTerrenoInstance.getBounds());
+            });
+
+            searchBox.addListener('places_changed', () => {
+                const places = searchBox.getPlaces();
+                if (places.length === 0) return;
+                terrenoMarkers.forEach(m => m.setMap(null));
+                terrenoMarkers = [];
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach(place => {
+                    if (!place.geometry || !place.geometry.location) return;
+                    terrenoMarkers.push(new google.maps.Marker({
+                        map: mapTerrenoInstance,
+                        title: place.name,
+                        position: place.geometry.location,
+                    }));
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                    document.getElementById('coordenadas').value =
+                        place.geometry.location.lat() + ',' + place.geometry.location.lng();
+                });
+                mapTerrenoInstance.fitBounds(bounds);
+            });
+
+            mapTerrenoInstance.addListener('click', (mapsMouseEvent) => {
+                const coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
+                document.getElementById('coordenadas').value = coords;
+                addTerrenoMarker(mapsMouseEvent.latLng);
+            });
+        }
+
+        function addTerrenoMarker(latLng) {
+            terrenoMarkers.forEach(m => m.setMap(null));
+            terrenoMarkers = [];
+            terrenoMarkers.push(new google.maps.Marker({
+                map: mapTerrenoInstance,
+                position: latLng,
+            }));
+        }
+
+        function updateTerrenoMap(coords) {
+            const parts = coords.split(',').map(Number);
+            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                const latLng = { lat: parts[0], lng: parts[1] };
+                mapTerrenoInstance.setCenter(latLng);
+                mapTerrenoInstance.setZoom(15);
+                addTerrenoMarker(latLng);
+            }
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const coords = lat + ',' + lng;
+                    document.getElementById('coordenadas').value = coords;
+                    updateTerrenoMap(coords);
+                }, function(error) {
+                    alert('Erro ao obter a localização: ' + error.message);
+                });
+            } else {
+                alert('Geolocalização não suportada pelo navegador.');
+            }
+        }
+
+        // ===== Colar texto da clipboard =====
+        async function pasteFromClipboard(fieldId) {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById(fieldId).value = text;
+            } catch (err) {
+                console.error('Falha ao colar texto:', err);
+                alert('Falha ao colar texto. Verifique as permissões do navegador.');
+            }
+        }
+
+        // ===== MÉTODO A: Print Screen nativo com editor de recorte =====
+        async function startScreenCapture() {
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                    alert('Seu navegador não suporta captura de tela. Use o upload ou cole a imagem (Ctrl+V).');
+                    return;
+                }
+
+                showCaptureStatus('info', 'Selecione a tela ou janela que deseja capturar...');
+
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: 'always' },
+                    audio: false
+                });
+
+                const video = document.createElement('video');
+                video.style.display = 'none';
+                document.body.appendChild(video);
+                video.srcObject = stream;
+                video.onloadedmetadata = function() {
+                    video.play();
+
+                    // Capturar um frame
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0);
+
+                    // Parar stream
+                    stream.getTracks().forEach(track => track.stop());
+                    document.body.removeChild(video);
+
+                    // Abrir editor de recorte
+                    openCropEditor(canvas.toDataURL('image/png'));
+                };
+            } catch (err) {
+n                console.error('Erro na captura de tela:', err);
+                if (err.name !== 'NotAllowedError') {
+                    showCaptureStatus('error', 'Erro ao capturar tela: ' + err.message);
+                } else {
+                    clearCaptureStatus();
+                }
+            }
+        }
+
+        // ===== Editor de Recorte =====
+        function openCropEditor(dataURL) {
+            const overlay = document.getElementById('cropOverlay');
+            const canvas = document.getElementById('cropCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.onload = function() {
+                // Redimensionar canvas para caber na tela mantendo proporção
+                const maxW = window.innerWidth * 0.9;
+                const maxH = window.innerHeight * 0.7;
+                let scale = 1;
+                if (img.width > maxW || img.height > maxH) {
+                    scale = Math.min(maxW / img.width, maxH / img.height);
+                }
+
+                canvas.width = img.width;
+                canvas.height = img.height;
+                canvas.style.width = (img.width * scale) + 'px';
+                canvas.style.height = (img.height * scale) + 'px';
+
+                ctx.drawImage(img, 0, 0);
+                cropImageData = { img: img, canvas: canvas, ctx: ctx, scale: scale };
+                cropSelection = { startX: 0, startY: 0, endX: 0, endY: 0, isDrawing: false, hasSelection: false };
+
+                overlay.classList.add('active');
+                showCaptureStatus('info', 'Selecione a área no editor de recorte.');
+            };
+            img.src = dataURL;
+        }
+
+        // Eventos de mouse no canvas de recorte
+        document.getElementById('cropCanvas').addEventListener('mousedown', function(e) {
+            if (!cropImageData) return;
+            const rect = this.getBoundingClientRect();
+            const scaleX = this.width / rect.width;
+            const scaleY = this.height / rect.height;
+            cropSelection.startX = (e.clientX - rect.left) * scaleX;
+            cropSelection.startY = (e.clientY - rect.top) * scaleY;
+            cropSelection.isDrawing = true;
+            cropSelection.hasSelection = false;
+        });
+
+        document.getElementById('cropCanvas').addEventListener('mousemove', function(e) {
+            if (!cropImageData || !cropSelection.isDrawing) return;
+            const rect = this.getBoundingClientRect();
+            const scaleX = this.width / rect.width;
+            const scaleY = this.height / rect.height;
+            cropSelection.endX = (e.clientX - rect.left) * scaleX;
+            cropSelection.endY = (e.clientY - rect.top) * scaleY;
+            drawCropSelection();
+        });
+
+        document.getElementById('cropCanvas').addEventListener('mouseup', function() {
+            if (!cropImageData) return;
+            cropSelection.isDrawing = false;
+            cropSelection.hasSelection = true;
+        });
+
+        // Suporte a toque (mobile)
+        document.getElementById('cropCanvas').addEventListener('touchstart', function(e) {
+            if (!cropImageData) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = this.getBoundingClientRect();
+            const scaleX = this.width / rect.width;
+            const scaleY = this.height / rect.height;
+            cropSelection.startX = (touch.clientX - rect.left) * scaleX;
+            cropSelection.startY = (touch.clientY - rect.top) * scaleY;
+            cropSelection.isDrawing = true;
+            cropSelection.hasSelection = false;
+        });
+
+        document.getElementById('cropCanvas').addEventListener('touchmove', function(e) {
+            if (!cropImageData || !cropSelection.isDrawing) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = this.getBoundingClientRect();
+            const scaleX = this.width / rect.width;
+            const scaleY = this.height / rect.height;
+            cropSelection.endX = (touch.clientX - rect.left) * scaleX;
+            cropSelection.endY = (touch.clientY - rect.top) * scaleY;
+            drawCropSelection();
+        });
+
+        document.getElementById('cropCanvas').addEventListener('touchend', function() {
+            if (!cropImageData) return;
+            cropSelection.isDrawing = false;
+            cropSelection.hasSelection = true;
+        });
+
+        function drawCropSelection() {
+            const ctx = cropImageData.ctx;
+            const img = cropImageData.img;
+
+            ctx.clearRect(0, 0, cropImageData.canvas.width, cropImageData.canvas.height);
+            ctx.drawImage(img, 0, 0);
+
+            // Escurecer fora da seleção
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            const x = Math.min(cropSelection.startX, cropSelection.endX);
+            const y = Math.min(cropSelection.startY, cropSelection.endY);
+            const w = Math.abs(cropSelection.endX - cropSelection.startX);
+            const h = Math.abs(cropSelection.endY - cropSelection.startY);
+
+            // Desenhar 4 retângulos ao redor da seleção
+            ctx.fillRect(0, 0, cropImageData.canvas.width, y); // topo
+            ctx.fillRect(0, y + h, cropImageData.canvas.width, cropImageData.canvas.height - (y + h)); // baixo
+            ctx.fillRect(0, y, x, h); // esquerda
+            ctx.fillRect(x + w, y, cropImageData.canvas.width - (x + w), h); // direita
+
+            // Borda da seleção
+            ctx.strokeStyle = '#007BFF';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, w, h);
+        }
+
+        function confirmCrop() {
+            if (!cropImageData) return;
+
+            if (!cropSelection.hasSelection ||
+                Math.abs(cropSelection.endX - cropSelection.startX) < 5 ||
+                Math.abs(cropSelection.endY - cropSelection.startY) < 5) {
+                // Sem seleção: usar imagem inteira
+                const dataURL = cropImageData.canvas.toDataURL('image/png');
+                setImageFromDataURL(dataURL);
+            } else {
+                // Recortar seleção
+                const x = Math.min(cropSelection.startX, cropSelection.endX);
+                const y = Math.min(cropSelection.startY, cropSelection.endY);
+                const w = Math.abs(cropSelection.endX - cropSelection.startX);
+                const h = Math.abs(cropSelection.endY - cropSelection.startY);
+
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = w;
+                tempCanvas.height = h;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(cropImageData.canvas, x, y, w, h, 0, 0, w, h);
+
+                const dataURL = tempCanvas.toDataURL('image/png');
+                setImageFromDataURL(dataURL);
+            }
+
+            cancelCrop();
+            showCaptureStatus('success', 'Imagem recortada com sucesso!');
+            setTimeout(() => clearCaptureStatus(), 3000);
+        }
+
+        function resetCropSelection() {
+            if (!cropImageData) return;
+            cropSelection = { startX: 0, startY: 0, endX: 0, endY: 0, isDrawing: false, hasSelection: false };
+            cropImageData.ctx.clearRect(0, 0, cropImageData.canvas.width, cropImageData.canvas.height);
+            cropImageData.ctx.drawImage(cropImageData.img, 0, 0);
+        }
+
+        function cancelCrop() {
+            document.getElementById('cropOverlay').classList.remove('active');
+            cropImageData = null;
+            cropSelection = { startX: 0, startY: 0, endX: 0, endY: 0, isDrawing: false, hasSelection: false };
+        }
+
+        // ===== MÉTODO B: Upload de arquivo (drag & drop) =====
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showCaptureStatus('error', 'Por favor, selecione um arquivo de imagem válido.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                setImageFromDataURL(e.target.result);
+                showCaptureStatus('success', 'Imagem carregada: ' + file.name);
+                setTimeout(() => clearCaptureStatus(), 3000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===== MÉTODO C: Colar imagem da clipboard =====
+        function focusPasteZone() {
+            const dropZone = document.getElementById('dropZone');
+            dropZone.style.borderColor = '#28a745';
+            dropZone.style.backgroundColor = '#e8f5e9';
+            showCaptureStatus('info', 'Pressione Ctrl+V (ou Cmd+V no Mac) para colar a imagem da clipboard.');
+            setTimeout(() => {
+                dropZone.style.borderColor = '';
+                dropZone.style.backgroundColor = '';
+            }, 3000);
+        }
+
+        function setupPasteListener() {
+            document.addEventListener('paste', function(e) {
+                // Só processa se estiver na página 2
+                if (!document.getElementById('page2').classList.contains('active')) return;
+
+                const items = e.clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.startsWith('image/')) {
+                        e.preventDefault();
+                        const blob = items[i].getAsFile();
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            setImageFromDataURL(event.target.result);
+                            showCaptureStatus('success', 'Imagem colada da clipboard com sucesso!');
+                            setTimeout(() => clearCaptureStatus(), 3000);
+                        };
+                        reader.readAsDataURL(blob);
+                        return;
+                    }
+                }
+            });
+        }
+
+        // ===== Atalhos de teclado =====
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Shift+X = Print screen com recorte
+                if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === 'x')) {
+                    e.preventDefault();
+                    if (document.getElementById('page2').classList.contains('active')) {
+                        startScreenCapture();
+                    }
+                }
+            });
+        }
+
+        // ===== Gerenciar imagem capturada =====
+        function setImageFromDataURL(dataURL) {
+            capturedImageDataURL = dataURL;
+
+            // Converter para blob também
+            const byteString = atob(dataURL.split(',')[1]);
+            const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            capturedImageBlob = new Blob([ab], { type: mimeString });
+
+            // Mostrar preview
+            const previewDiv = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = dataURL;
+            previewDiv.style.display = 'block';
+        }
+
+        function clearImage() {
+            capturedImageBlob = null;
+            capturedImageDataURL = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('previewImg').src = '';
+            document.getElementById('fileUpload').value = '';
+            clearCaptureStatus();
+        }
+
+        // ===== Mensagens de status =====
+        function showCaptureStatus(type, message) {
+            const status = document.getElementById('captureStatus');
+            status.className = 'status-message ' + type;
+            status.innerHTML = message;
+        }
+
+        function clearCaptureStatus() {
+            const status = document.getElementById('captureStatus');
+            status.className = 'status-message';
+            status.innerHTML = '';
+        }
+
+        function showSubmitStatus(type, message) {
+            const status = document.getElementById('submitStatus');
+            status.className = 'status-message ' + type;
+            status.innerHTML = message;
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.className = 'status-message';
+                    status.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // ===== Utilitários =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAryf15DN6a0iOH72GMB0IaS3qbL44E8G8&libraries=places&callback=initMapCentral" async defer></script>
+</body>
+</html>
