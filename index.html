@@ -1,441 +1,587 @@
 <!DOCTYPE html>
-<html lang=\"pt-BR\">
+<html lang="pt-BR">
 <head>
-    <meta charset=\"UTF-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-    <title>Exata Construções</title>
-    <link rel=\"manifest\" href=\"/exata/manifest.json\"> <!-- LINHA ADICIONADA: Vincula o manifest.json -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Terrenos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f4f9;
+            color: #333;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
+            padding: 20px;
         }
         .container {
             background-color: #fff;
-            border: 2px solid #4b0082; /* Borda roxa */
-            border-radius: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba/rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 400px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #007BFF;
             margin-bottom: 20px;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="url"], select, textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         .logo {
-            width: 200px;
-            margin-bottom: 20px;
-        }
-        .input, .select, .textarea {
-            width: calc(100% - 40px); /* Deixa espaço para o botão de áudio */
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .button {
             display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 18px;
-            color: #fff;
-            background-color: #0000ff; /* Azul */
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            box-sizing: border-box;
+            width: 150px;
+            margin: 0 auto 20px;
         }
-        .button:hover {
-            background-color: #00008b; /* Azul escuro */
-        }
-        .small-button {
-            width: auto;
-            padding: 10px 20px;
-            font-size: 14px;
-        }
-        .hidden {
+        .page {
             display: none;
         }
-        .textarea-container {
-            display: flex;
-            align-items: center;
+        .active {
+            display: block;
         }
-        /* New style for audio button */
-        .audio-button {
-            background: none;
-            border: none;
+        #mapCentral, #mapTerreno {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Image Capture Styles */
+        .capture-section {
+            margin-top: 20px;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fafafa;
+            position: relative;
+        }
+        .capture-section.dragover {
+            border-color: #007BFF;
+            background: #eef6ff;
+        }
+        .preview-container {
+            margin-top: 15px;
+            display: none;
+            position: relative;
+            max-width: 100%;
+        }
+        .preview-container img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .remove-img {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
             cursor: pointer;
-            padding: 0;
-            margin-left: 10px; /* Adjust spacing as needed */
-            height: 40px; /* Match input height for better alignment */
-            width: 40px; /* Match input height */
-            display: flex;
+            font-weight: bold;
+        }
+
+        /* Cropper Modal */
+        #cropperModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .audio-button img {
-            width: 30px; /* Adjust microphone icon size */
-            height: 30px;
+        #cropperCanvas {
+            max-width: 90vw;
+            max-height: 80vh;
+            cursor: crosshair;
+            background: #000;
+        }
+        .cropper-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-crop { background: #28a745; }
+        .btn-full { background: #17a2b8; }
+        .btn-cancel { background: #6c757d; }
+
+        .shortcut-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <div class=\"container\" id=\"loginContainer\">
-        <img src=\"https://fabiogrisard.github.io/exata/logo2.bmp\" alt=\"Logotipo Exata Construções\" class=\"logo\">
-        <form id=\"loginForm\">
-            <input type=\"text\" id=\"username\" class=\"input\" placeholder=\"Usuário\" required>
-            <input type=\"password\" id=\"password\" class=\"input\" placeholder=\"Senha\" required>
-            <button type=\"submit\" class=\"button\">Login</button>
-        </form>
-    </div>
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/fabiogrisard/addcasa/refs/heads/main/logoexatanovo.JPG" alt="Logotipo" class="logo">
+        
+        <!-- Página 1 -->
+        <div id="page1" class="page active">
+            <h1>Formulário de Terrenos</h1>
+            <form id="configForm">
+                <label for="planilhaNome">Selecione a Planilha:</label>
+                <select id="planilhaNome" name="planilhaNome" required>
+                    <option value="">Carregando...</option>
+                </select>
 
-    <div class=\"container hidden\" id=\"mainContainer\">
-        <img src=\"https://fabiogrisard.github.io/exata/logo2.bmp\" alt=\"Logotipo Exata Construções\" class=\"logo\">
-        <a href=\"#\" id=\"incluirCustoBtn\" class=\"button\">Incluir Custo</a>
-        <a href=\"#\" id=\"diarioObraBtn\" class=\"button\">Diário de Obra</a>
-        <a href=\"#\" class=\"button\">Acompanhe a Obra</a>
-        <a href=\"#\" class=\"button\">Pagamentos</a>
-        <a href=\"#\" id=\"previsaoTempoBtn\" class=\"button\">Previsão do Tempo</a>
-    </div>
+                <label for="folderId">ID da Pasta no Google Drive:</label>
+                <input type="text" id="folderId" name="folderId" required>
 
-    <div class=\"container hidden\" id=\"incluirCustoContainer\">
-        <img src=\"https://fabiogrisard.github.io/exata/logo2.bmp\" alt=\"Logotipo Exata Construções\" class=\"logo\">
-        <form id=\"costForm\">
-            <select id=\"obra\" class=\"select\" required>
-                <option value=\"\" disabled selected>Selecione a Obra</option>
-                <!-- As opções serão populadas dinamicamente pelo JavaScript -->
-            </select>
-            <input type=\"text\" id=\"fornecedor\" class=\"input\" placeholder=\"Fornecedor\" required>
-            <input type=\"text\" id=\"item\" class=\"input\" placeholder=\"Item\" required>
-            <input type=\"number\" id=\"valor\" class=\"input\" placeholder=\"Valor\" required>
-            <button type=\"submit\" class=\"button\">Enviar</button>
-        </form>
-        <button id=\"voltarBtnCusto\" class=\"button small-button\">Voltar</button>
-    </div>
+                <label for="spreadsheetId">ID da Planilha no Google Sheets:</label>
+                <input type="text" id="spreadsheetId" name="spreadsheetId" required>
 
-    <div class=\"container hidden\" id=\"previsaoTempoContainer\">
-        <img src=\"https://fabiogrisard.github.io/exata/logo2.bmp\" alt=\"Logotipo Exata Construções\" class=\"logo\">
-        <div id=\"cont_d713deb4f33e0a60a4537a731d9dcb0a\" style=\"margin-top: 20px;\">
-            <script type=\"text/javascript\" async src=\"https://www.tempo.com/wid_loader/d713deb4f33e0a60a4537a731d9dcb0a\"></script>
+                <label for="centralLocation">Localização Central da Cidade:</label>
+                <input type="text" id="centralLocation" name="centralLocation" required>
+
+                <div id="mapCentral"></div>
+
+                <button type="button" onclick="goToPage2()">Próxima Página</button>
+            </form>
         </div>
-        <button id=\"voltarBtnTempo\" class=\"button small-button\">Voltar</button>
+
+        <!-- Página 2 -->
+        <div id="page2" class="page">
+            <h1>Inserção de Dados do Terreno</h1>
+            <form id="dataForm">
+                <label for="numeroDado">Número do Terreno:</label>
+                <input type="text" id="numeroDado" name="numeroDado" required placeholder="Ex: 027">
+
+                <label for="link">Link do Anúncio:</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="url" id="link" name="link">
+                    <button type="button" style="margin-top:5px" onclick="pasteFromClipboard('link')">Colar</button>
+                </div>
+
+                <label for="infoImovel">Informações do Imóvel:</label>
+                <div style="display: flex; gap: 5px;">
+                    <textarea id="infoImovel" name="infoImovel"></textarea>
+                    <button type="button" style="margin-top:5px" onclick="pasteFromClipboard('infoImovel')">Colar</button>
+                </div>
+
+                <!-- Sistema de Captura de Imagem -->
+                <label>Imagem do Terreno:</label>
+                <div class="capture-section" id="dropZone">
+                    <p>Arraste uma imagem, cole (Ctrl+V) ou clique para selecionar</p>
+                    <p class="shortcut-hint">Atalho para Print: Ctrl + Shift + X</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display:none">
+                    <button type="button" onclick="document.getElementById('fileInput').click()">Selecionar Arquivo</button>
+                    
+                    <div class="preview-container" id="previewContainer">
+                        <div class="remove-img" onclick="removeImage()">×</div>
+                        <img id="imagePreview" src="" alt="Preview">
+                    </div>
+                </div>
+
+                <label for="coordenadas">Coordenadas:</label>
+                <input type="text" id="coordenadas" name="coordenadas" required>
+
+                <div id="mapTerreno"></div>
+                <button type="button" onclick="getCurrentLocation()">Localizar Minha Posição</button>
+
+                <label for="tipoRua">Tipo de Rua:</label>
+                <select id="tipoRua" name="tipoRua" required>
+                    <option value="3">Rua de Asfalto</option>
+                    <option value="1">Rua de Chão</option>
+                    <option value="2">Rua de Calçamento</option>
+                </select>
+
+                <label for="esquina">É esquina?</label>
+                <select id="esquina" name="esquina" required>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                </select>
+
+                <label for="vocacao">Vocação do Terreno:</label>
+                <select id="vocacao" name="vocacao" required>
+                    <option value="1">Residencial</option>
+                    <option value="2">Comercial Pólo Secundário</option>
+                    <option value="3">Comercial Pólo Primário</option>
+                </select>
+
+                <button type="submit" id="btnSubmit">Enviar Dados</button>
+            </form>
+        </div>
     </div>
 
-    <div class=\"container hidden\" id=\"diarioObraContainer\">
-        <img src=\"https://fabiogrisard.github.io/exata/logo2.bmp\" alt=\"Logotipo Exata Construções\" class=\"logo\">
-        <form id=\"diarioObraForm\">
-            <select id=\"obraDiario\" class=\"select\" required>
-                <option value=\"\" disabled selected>Selecione a Obra</option>
-                <!-- As opções serão populadas dinamicamente pelo JavaScript -->
-            </select>
-            <div class=\"textarea-container\">
-                <textarea id=\"faseComentarios\" class=\"textarea\" placeholder=\"Fase da Obra/Comentários\" required></textarea>
-                <button type=\"button\" id=\"audioBtnComentarios\" class=\"audio-button\"><img src=\"https://img.icons8.com/ios-filled/50/000000/microphone.png\" alt=\"Microfone\"></button>
-            </div>
-            <div class=\"textarea-container\">
-                <textarea id=\"itensCompra\" class=\"textarea\" placeholder=\"Itens a Serem Comprados\"></textarea>
-                <button type=\"button\" id=\"audioBtnItens\" class=\"audio-button\"><img src=\"https://img.icons8.com/ios-filled/50/000000/microphone.png\" alt=\"Microfone\"></button>
-            </div>
-            <input type=\"file\" id=\"foto1\" class=\"input\" accept=\"image/*\" capture=\"camera\">
-            <input type=\"file\" id=\"foto2\" class=\"input\" accept=\"image/*\" capture=\"camera\">
-            <input type=\"file\" id=\"foto3\" class=\"input\" accept=\"image/*\" capture=\"camera\">
-            <input type=\"file\" id=\"foto4\" class=\"input\" accept=\"image/*\" capture=\"camera\">
-            <button type=\"submit\" class=\"button\">Enviar</button>
-        </form>
-        <button id=\"voltarBtnDiario\" class=\"button small-button\">Voltar</button>
+    <!-- Modal do Editor de Recorte -->
+    <div id="cropperModal">
+        <canvas id="cropperCanvas"></canvas>
+        <div class="cropper-controls">
+            <button type="button" class="btn-crop" onclick="confirmCrop()">Confirmar Recorte</button>
+            <button type="button" class="btn-full" onclick="useFullImage()">Usar Imagem Completa</button>
+            <button type="button" class="btn-cancel" onclick="closeCropper()">Cancelar</button>
+        </div>
     </div>
 
     <script>
-        // --- INÍCIO DA ÁREA DE CONFIGURAÇÕES CENTRALIZADAS ---
-        // Aqui você pode facilmente adicionar, remover ou editar projetos.
-        // Cada objeto representa uma obra/projeto e contém IDs importantes.
-        const projectConfigurations = [
-            {
-                id: 'apartamento', // ID único para referência interna
-                name: 'Apartamento Patricia', // Nome amigável que aparece na lista
-                sheetsId: '1BMf99cthQ0jaIz2rrMFt6tAzA4PtqDNcQPaA9-XAa2o', // ID da planilha Google Sheets para registro de custos
-                driveFolderId: '1vfQuGe4ukcloG9LxiL49ck31ajWjQbcO', // ID da pasta do Google Drive para upload de fotos/documentos gerais
-                dailyLogDriveFolderId: '1vfQuGe4ukcloG9LxiL49ck31ajWjQbcO' // ID da pasta do Google Drive específica para o diário de obra (pode ser o mesmo que driveFolderId ou diferente)
-            },
-            {
-                id: 'Felipe',
-                name: 'Casa Felipe',
-                sheetsId: '1CAmCSd-HMW6jYm8wABK020QpcNulfcXb_WfgkW6GdSs', // 
-                driveFolderId: '1NcysZ5BxYm-8OmsBbI9izTuhSnlTNhHe', // 
-                dailyLogDriveFolderId: '1NcysZ5BxYm-8OmsBbI9izTuhSnlTNhHe' // 
-            }
-            // Para adicionar um novo projeto (ex: Casa do Felipe):
-            // Basta adicionar um novo objeto abaixo, seguindo o mesmo formato.
-            // {
-            //     id: 'casa_felipe', // Use um ID único e fácil de identificar
-            //     name: 'Casa do Felipe', // Nome que aparecerá nas listas suspensas
-            //     sheetsId: 'ID_DA_PLANILHA_GOOGLESHEETS_DA_CASA_DO_FELIPE',
-            //     driveFolderId: 'ID_DA_PASTA_DRIVE_GERAL_DA_CASA_DO_FELIPE',
-            //     dailyLogDriveFolderId: 'ID_DA_PASTA_DRIVE_DIARIO_DA_CASA_DO_FELIPE' // Se for uma pasta diferente para o diário
-            // }
-        ];
-        // --- FIM DA ÁREA DE CONFIGURAÇÕES CENTRALIZADAS ---
+        let capturedImageBase64 = null;
+        let originalImage = new Image();
+        let cropperCanvas, ctx;
+        let isDrawing = false;
+        let startX, startY, currentX, currentY;
 
-        const correctUsername = 'fabiogrisard';
-        const correctPassword = 'coxa1320';
+        window.onload = function() {
+            loadPlanilhas();
+            initMapCentral();
+            initMapTerreno();
+            setupImageCapture();
+        };
 
-        const loginContainer = document.getElementById('loginContainer');
-        const mainContainer = document.getElementById('mainContainer');
-        const incluirCustoContainer = document.getElementById('incluirCustoContainer');
-        const previsaoTempoContainer = document.getElementById('previsaoTempoContainer');
-        const diarioObraContainer = document.getElementById('diarioObraContainer');
-        // Referências diretas aos elementos select para facilitar o uso na função populate
-        const selectObra = document.getElementById('obra');
-        const selectObraDiario = document.getElementById('obraDiario');
-
-        // Função para popular as listas suspensas de obras
-        function populateProjectSelects() {
-            // Limpa as opções existentes, mantendo a opção \"Selecione a Obra\" (índice 0)
-            // Percorre de trás para frente para evitar problemas com o índice ao remover
-            for (let i = selectObra.options.length - 1; i > 0; i--) {
-                selectObra.remove(i);
-            }
-            for (let i = selectObraDiario.options.length - 1; i > 0; i--) {
-                selectObraDiario.remove(i);
-            }
-
-            projectConfigurations.forEach(project => {
-                const optionCusto = document.createElement('option');
-                optionCusto.value = project.id; // Usa o ID para o valor da opção
-                optionCusto.textContent = project.name; // Usa o nome amigável para o texto
-                selectObra.appendChild(optionCusto);
-
-                const optionDiario = document.createElement('option');
-                optionDiario.value = project.id;
-                optionDiario.textContent = project.name;
-                selectObraDiario.appendChild(optionDiario);
+        // --- MAPAS E NAVEGAÇÃO (MANTIDOS) ---
+        function loadPlanilhas() {
+            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRuuja7Tveui7EINl-hHXdHtK9JI8qLnx4bELPAtRQcstNNzN0PMt7_KfsSjuuubl40xLUWaGzyl1AY/pub?gid=0&single=true&output=csv';
+            fetch(url).then(r => r.text()).then(csv => {
+                const linhas = csv.split('\n');
+                const select = document.getElementById('planilhaNome');
+                select.innerHTML = '';
+                linhas.forEach(linha => {
+                    const col = linha.split(',');
+                    if (col.length >= 3) {
+                        const opt = document.createElement('option');
+                        opt.value = `${col[1].trim()},${col[2].trim()}`;
+                        opt.textContent = col[0].trim();
+                        select.appendChild(opt);
+                    }
+                });
+                if(select.options.length > 0) select.dispatchEvent(new Event('change'));
             });
         }
 
-        // Chama a função para popular as listas quando o script é carregado
-        populateProjectSelects();
-
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === correctUsername && password === correctPassword) {
-                alert('Login realizado com sucesso!');
-                loginContainer.classList.add('hidden');
-                mainContainer.classList.remove('hidden');
-            } else {
-                alert('Usuário ou senha incorretos.');
-            }
+        document.getElementById('planilhaNome').addEventListener('change', function() {
+            const [f, s] = this.value.split(',');
+            document.getElementById('folderId').value = f || '';
+            document.getElementById('spreadsheetId').value = s || '';
         });
 
-        document.getElementById('incluirCustoBtn').addEventListener('click', function() {
-            mainContainer.classList.add('hidden');
-            incluirCustoContainer.classList.remove('hidden');
-        });
+        function goToPage2() {
+            if (document.getElementById('folderId').value && document.getElementById('centralLocation').value) {
+                document.getElementById('page1').classList.remove('active');
+                document.getElementById('page2').classList.add('active');
+            } else alert('Preencha os campos obrigatórios.');
+        }
 
-        document.getElementById('diarioObraBtn').addEventListener('click', function() {
-            mainContainer.classList.add('hidden');
-            diarioObraContainer.classList.remove('hidden');
-        });
+        // --- SISTEMA DE CAPTURA DE IMAGEM ---
+        function setupImageCapture() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            cropperCanvas = document.getElementById('cropperCanvas');
+            ctx = cropperCanvas.getContext('2d');
 
-        document.getElementById('previsaoTempoBtn').addEventListener('click', function() {
-            mainContainer.classList.add('hidden');
-            previsaoTempoContainer.classList.remove('hidden');
-        });
+            // Método B: Drag & Drop
+            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
 
-        document.getElementById('voltarBtnCusto').addEventListener('click', function() {
-            incluirCustoContainer.classList.add('hidden');
-            mainContainer.classList.remove('hidden');
-        });
+            // Método B: Clique
+            fileInput.addEventListener('change', e => {
+                if (e.target.files.length) handleFile(e.target.files[0]);
+            });
 
-        document.getElementById('voltarBtnTempo').addEventListener('click', function() {
-            previsaoTempoContainer.classList.add('hidden');
-            mainContainer.classList.remove('hidden');
-        });
-
-        document.getElementById('voltarBtnDiario').addEventListener('click', function() {
-            diarioObraContainer.classList.add('hidden');
-            mainContainer.classList.remove('hidden');
-        });
-
-        document.getElementById('costForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const selectedObraId = selectObra.value;
-            // Encontra a configuração do projeto selecionado
-            const selectedProject = projectConfigurations.find(p => p.id === selectedObraId);
-
-            if (!selectedProject) {
-                alert('Por favor, selecione uma obra válida.');
-                return;
-            }
-
-            const fornecedor = document.getElementById('fornecedor').value;
-            const item = document.getElementById('item').value;
-            const valor = document.getElementById('valor').value;
-            const data = new Date().toISOString().split('T')[0];
-            const pagador = 'Fabio';
-
-            const dataToSend = {
-                obra: selectedProject.name, // Envia o nome amigável da obra
-                fornecedor,
-                item,
-                valor,
-                data,
-                pagador,
-                planilha: selectedProject.sheetsId, // Pega o ID da planilha da configuração
-                pasta: selectedProject.driveFolderId // Pega o ID da pasta do Drive da configuração
-            };
-
-            fetch('https://prehistoriclobster-n8n.cloudfy.live/webhook/valores', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToSend)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Dados enviados com sucesso!');
-                    document.getElementById('costForm').reset();
-                } else {
-                    alert('Falha ao enviar os dados.');
+            // Método C: Colar (Ctrl+V)
+            window.addEventListener('paste', e => {
+                const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                for (let item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        handleFile(item.getAsFile());
+                        break;
+                    }
                 }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao enviar os dados.');
             });
-        });
 
-        document.getElementById('diarioObraForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const selectedObraDiarioId = selectObraDiario.value;
-            // Encontra a configuração do projeto selecionado para o diário de obra
-            const selectedProject = projectConfigurations.find(p => p.id === selectedObraDiarioId);
-
-            if (!selectedProject) {
-                alert('Por favor, selecione uma obra válida.');
-                return;
-            }
-
-            const faseComentarios = document.getElementById('faseComentarios').value;
-            const itensCompra = document.getElementById('itensCompra').value;
-            const foto1 = document.getElementById('foto1').files[0];
-            const foto2 = document.getElementById('foto2').files[0];
-            const foto3 = document.getElementById('foto3').files[0];
-            const foto4 = document.getElementById('foto4').files[0];
-
-            if (!selectedObraDiarioId || !faseComentarios || (!foto1 && !foto2 && !foto3 && !foto4)) {
-                alert('Por favor, selecione a obra, preencha a fase/comentários e adicione pelo menos uma foto.');
-                return;
-            }
-
-            const formData = new FormData();
-            const data = new Date().toISOString().split('T')[0];
-
-            formData.append('data', data);
-            formData.append('obra', selectedProject.name); // Envia o nome amigável da obra
-            formData.append('faseComentarios', faseComentarios);
-            formData.append('itensCompra', itensCompra);
-            formData.append('pastaDiario', selectedProject.dailyLogDriveFolderId); // Pega o ID da pasta de diário da configuração
-            formData.append('planilha', selectedProject.sheetsId); // Pega o ID da planilha da configuração
-            formData.append('pasta', selectedProject.driveFolderId); // Pega o ID da pasta do Drive da configuração
-
-            // Função para renomear fotos
-            function renameFile(file, newName) {
-                return new File([file], newName, { type: file.type });
-            }
-
-            if (foto1) formData.append('foto1', renameFile(foto1, `${data}_01.${foto1.name.split('.').pop()}`));
-            if (foto2) formData.append('foto2', renameFile(foto2, `${data}_02.${foto2.name.split('.').pop()}`));
-            if (foto3) formData.append('foto3', renameFile(foto3, `${data}_03.${foto3.name.split('.').pop()}`));
-            if (foto4) formData.append('foto4', renameFile(foto4, `${data}_04.${foto4.name.split('.').pop()}`));
-
-            fetch('https://prehistoriclobster-n8n.cloudfy.live/webhook/diario_obra', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Dados enviados com sucesso!');
-                    document.getElementById('diarioObraForm').reset();
-                } else {
-                    alert('Falha ao enviar os dados.');
+            // Método A: Atalho Ctrl+Shift+X
+            window.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'X') {
+                    e.preventDefault();
+                    captureScreen();
                 }
+            });
+
+            // Eventos do Cropper
+            cropperCanvas.addEventListener('mousedown', startSelection);
+            cropperCanvas.addEventListener('mousemove', drawSelection);
+            cropperCanvas.addEventListener('mouseup', endSelection);
+            cropperCanvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; startSelection({offsetX: t.clientX - cropperCanvas.getBoundingClientRect().left, offsetY: t.clientY - cropperCanvas.getBoundingClientRect().top}); }, {passive: false});
+            cropperCanvas.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; drawSelection({offsetX: t.clientX - cropperCanvas.getBoundingClientRect().left, offsetY: t.clientY - cropperCanvas.getBoundingClientRect().top}); }, {passive: false});
+            cropperCanvas.addEventListener('touchend', endSelection);
+        }
+
+        async function captureScreen() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "always" }, audio: false });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                video.onloadedmetadata = () => {
+                    setTimeout(() => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        stream.getTracks().forEach(t => t.stop());
+                        openCropper(canvas.toDataURL('image/png'));
+                    }, 500);
+                };
+            } catch (err) { console.error("Erro captura:", err); }
+        }
+
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => openCropper(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        function openCropper(dataUrl) {
+            originalImage.onload = () => {
+                document.getElementById('cropperModal').style.display = 'flex';
+                cropperCanvas.width = originalImage.width;
+                cropperCanvas.height = originalImage.height;
+                resetSelection();
+                renderCropper();
+            };
+            originalImage.src = dataUrl;
+        }
+
+        function resetSelection() {
+            startX = startY = currentX = currentY = 0;
+        }
+
+        function renderCropper() {
+            ctx.clearRect(0, 0, cropperCanvas.width, cropperCanvas.height);
+            ctx.drawImage(originalImage, 0, 0);
+            
+            // Overlay escuro
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, cropperCanvas.width, cropperCanvas.height);
+
+            if (startX !== currentX || startY !== currentY) {
+                const x = Math.min(startX, currentX);
+                const y = Math.min(startY, currentY);
+                const w = Math.abs(currentX - startX);
+                const h = Math.abs(currentY - startY);
+
+                // Limpar área da seleção
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillRect(x, y, w, h);
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Borda azul
+                ctx.strokeStyle = '#007BFF';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(x, y, w, h);
+            }
+        }
+
+        function startSelection(e) {
+            isDrawing = true;
+            startX = e.offsetX;
+            startY = e.offsetY;
+        }
+
+        function drawSelection(e) {
+            if (!isDrawing) return;
+            currentX = e.offsetX;
+            currentY = e.offsetY;
+            renderCropper();
+        }
+
+        function endSelection() {
+            isDrawing = false;
+        }
+
+        function confirmCrop() {
+            const x = Math.min(startX, currentX);
+            const y = Math.min(startY, currentY);
+            const w = Math.abs(currentX - startX);
+            const h = Math.abs(currentY - startY);
+
+            if (w < 10 || h < 10) return alert("Selecione uma área válida para recortar.");
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            tempCanvas.getContext('2d').drawImage(originalImage, x, y, w, h, 0, 0, w, h);
+            setCapturedImage(tempCanvas.toDataURL('image/png'));
+            closeCropper();
+        }
+
+        function useFullImage() {
+            setCapturedImage(originalImage.src);
+            closeCropper();
+        }
+
+        function setCapturedImage(base64) {
+            capturedImageBase64 = base64;
+            document.getElementById('imagePreview').src = base64;
+            document.getElementById('previewContainer').style.display = 'block';
+        }
+
+        function removeImage() {
+            capturedImageBase64 = null;
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+        }
+
+        function closeCropper() {
+            document.getElementById('cropperModal').style.display = 'none';
+        }
+
+        // --- SUBMISSÃO ---
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const num = document.getElementById('numeroDado').value;
+            const folderId = document.getElementById('folderId').value;
+            const spreadsheetId = document.getElementById('spreadsheetId').value;
+            const coords = document.getElementById('coordenadas').value;
+            const central = document.getElementById('centralLocation').value;
+
+            if (!capturedImageBase64) {
+                alert("Por favor, capture ou anexe uma imagem do terreno.");
+                return;
+            }
+
+            const dist = calcularDistancia(central, coords);
+            const filename = `terreno_${num.toString().padStart(3, '0')}.png`;
+
+            const payload = {
+                folderId,
+                spreadsheetId,
+                numeroDado: num,
+                link: document.getElementById('link').value,
+                infoImovel: document.getElementById('infoImovel').value,
+                coordenadas: coords,
+                tipoRua: parseInt(document.getElementById('tipoRua').value),
+                esquina: parseInt(document.getElementById('esquina').value),
+                vocacao: parseInt(document.getElementById('vocacao').value),
+                distancia: dist.toFixed(2),
+                imagemBase64: capturedImageBase64.split(',')[1], // Apenas o dado base64
+                imagemNome: filename
+            };
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.textContent = "Enviando...";
+
+            fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook/addterreno', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao enviar os dados.');
+            .then(() => {
+                alert('Dados enviados com sucesso!');
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Erro ao enviar.');
+                btn.disabled = false;
+                btn.textContent = "Enviar Dados";
             });
         });
 
-        // Função para leitura de áudio usando a API Web Speech
-        function startRecognition(targetElementId) {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'pt-BR';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById(targetElementId).value += transcript + '\\n';
-            };
-
-            recognition.onerror = function(event) {
-                console.error('Erro no reconhecimento de fala:', event.error);
-                alert('Erro ao reconhecer o áudio: ' + event.error);
-            };
-
-            recognition.start();
+        function calcularDistancia(c1, c2) {
+            const [la1, lo1] = c1.split(',').map(Number);
+            const [la2, lo2] = c2.split(',').map(Number);
+            const R = 6371;
+            const dLat = (la2 - la1) * Math.PI / 180;
+            const dLon = (lo2 - lo1) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLon/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        document.getElementById('audioBtnComentarios').addEventListener('click', function() {
-            startRecognition('faseComentarios');
-        });
-
-        document.getElementById('audioBtnItens').addEventListener('click', function() {
-            startRecognition('itensCompra');
-        });
-
-        // Salvar e recuperar o nome de usuário
-        const usernameInput = document.getElementById('username');
-
-        // Carregar o nome de usuário salvo
-        if (localStorage.getItem('username')) {
-            usernameInput.value = localStorage.getItem('username');
-        }
-
-        // Salvar o nome de usuário ao enviar o formulário
-        document.getElementById('loginForm').addEventListener('submit', function() {
-            localStorage.setItem('username', usernameInput.value);
-        });
-
-        // --- INÍCIO DO CÓDIGO PWA (REGISTRO DO SERVICE WORKER) ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/exata/service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado com sucesso:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Falha no registro do Service Worker:', error);
-                    });
+        // --- GOOGLE MAPS (MANTIDOS) ---
+        function initMapCentral() {
+            const map = new google.maps.Map(document.getElementById("mapCentral"), { center: { lat: -25.39, lng: -51.45 }, zoom: 13 });
+            const input = document.createElement("input");
+            input.id = "pac-input-central";
+            input.placeholder = "Pesquisar endereço";
+            input.style.cssText = "margin-top:10px;padding:10px;width:300px;border:1px solid #ccc";
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+            const sb = new google.maps.places.SearchBox(input);
+            sb.addListener("places_changed", () => {
+                const p = sb.getPlaces()[0];
+                if (p && p.geometry) {
+                    document.getElementById('centralLocation').value = p.geometry.location.lat() + ',' + p.geometry.location.lng();
+                    map.setCenter(p.geometry.location);
+                }
             });
+            map.addListener("click", e => document.getElementById('centralLocation').value = e.latLng.lat() + ',' + e.latLng.lng());
         }
-        // --- FIM DO CÓDIGO PWA ---
+
+        function initMapTerreno() {
+            const map = new google.maps.Map(document.getElementById("mapTerreno"), { center: { lat: -25.39, lng: -51.45 }, zoom: 13 });
+            const input = document.createElement("input");
+            input.id = "pac-input-terreno";
+            input.placeholder = "Pesquisar endereço";
+            input.style.cssText = "margin-top:10px;padding:10px;width:300px;border:1px solid #ccc";
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+            const sb = new google.maps.places.SearchBox(input);
+            sb.addListener("places_changed", () => {
+                const p = sb.getPlaces()[0];
+                if (p && p.geometry) {
+                    document.getElementById('coordenadas').value = p.geometry.location.lat() + ',' + p.geometry.location.lng();
+                    map.setCenter(p.geometry.location);
+                }
+            });
+            map.addListener("click", e => document.getElementById('coordenadas').value = e.latLng.lat() + ',' + e.latLng.lng());
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    const coords = p.coords.latitude + ',' + p.coords.longitude;
+                    document.getElementById('coordenadas').value = coords;
+                });
+            }
+        }
+
+        async function pasteFromClipboard(id) {
+            try { document.getElementById(id).value = await navigator.clipboard.readText(); } catch(e) {}
+        }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAryf15DN6a0iOH72GMB0IaS3qbL44E8G8&libraries=places" async defer></script>
 </body>
 </html>
