@@ -58,10 +58,6 @@
         button:hover {
             background-color: #0056b3;
         }
-        button:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
         img {
             display: block;
             width: 150px;
@@ -93,64 +89,183 @@
         #pac-input:focus {
             border-color: #4d90fe;
         }
-        .field-row {
+
+        /* Sincronização de Número */
+        .numero-row {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-top: 5px;
         }
-        .field-row input[type="text"], .field-row input[type="url"] {
-            margin-top: 0;
+        .numero-row input {
+            width: 200px !important;
+            flex-shrink: 0;
         }
-        .btn-small {
+        .btn-sync {
             margin-top: 0;
             padding: 10px 15px;
-            white-space: nowrap;
-            font-size: 14px;
-        }
-        .feedback {
-            margin-top: 5px;
-            font-size: 14px;
-            min-height: 20px;
-            padding: 5px 0;
-        }
-        .feedback.success { color: #28a745; }
-        .feedback.error { color: #dc3545; }
-        .feedback.warning { color: #ffc107; }
-        .feedback.info { color: #555; }
-        #imagemPreview {
-            display: none;
-            width: 150px;
-            margin-top: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
         }
-        .image-buttons {
+        .btn-sync:hover {
+            background-color: #218838;
+        }
+        .btn-sync:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Captura de Imagem */
+        .image-capture-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .capture-methods {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
-        .image-buttons button {
+        .capture-methods button {
             margin-top: 0;
-            padding: 10px 15px;
+            padding: 8px 12px;
+            font-size: 13px;
+            background-color: #17a2b8;
+        }
+        .capture-methods button:hover {
+            background-color: #138496;
+        }
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            color: #888;
             font-size: 14px;
         }
-        #btnRemoverImagem {
-            background-color: #dc3545;
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #007BFF;
+            background-color: #e8f0fe;
         }
-        #btnRemoverImagem:hover {
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .image-preview img {
+            display: block;
+            max-width: 100%;
+            max-height: 300px;
+            margin: 0 auto 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: auto;
+        }
+        .btn-remove {
+            background-color: #dc3545;
+            margin-top: 0;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        .btn-remove:hover {
             background-color: #c82333;
         }
-        #numeroDado {
-            width: 200px;
-            flex-shrink: 0;
+        .image-status {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Editor de Recorte */
+        .crop-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .crop-overlay.active {
+            display: flex;
+        }
+        .crop-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90vw;
+            max-height: 95vh;
+            overflow: auto;
+            text-align: center;
+        }
+        .crop-container h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .crop-container p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0 10px;
+        }
+        .crop-canvas-wrapper {
+            position: relative;
+            margin: 10px auto;
+            display: inline-block;
+        }
+        #cropCanvas {
+            display: block;
+            cursor: crosshair;
+            max-width: 100%;
+        }
+        .crop-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .crop-buttons button {
+            margin-top: 0;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .btn-confirm {
+            background-color: #28a745;
+        }
+        .btn-confirm:hover {
+            background-color: #218838;
+        }
+        .btn-full {
+            background-color: #6c757d;
+        }
+        .btn-full:hover {
+            background-color: #5a6268;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="https://raw.githubusercontent.com/fabiogrisard/addcasa/refs/heads/main/logoexatanovo.JPG" alt="Logotipo">
-        
+
         <!-- Página 1 -->
         <div id="page1" class="page active">
             <h1>Formulário de Terrenos</h1>
@@ -180,22 +295,21 @@
             <h1>Inserção de Dados do Terreno</h1>
             <form id="dataForm">
                 <label for="numeroDado">Número do Terreno:</label>
-                <div class="field-row">
+                <div class="numero-row">
                     <input type="text" id="numeroDado" name="numeroDado" required>
-                    <button type="button" onclick="sincronizarNumero()" id="btnSincronizar" class="btn-small">Sincronizar</button>
+                    <button type="button" class="btn-sync" onclick="sincronizarNumero()">Sincronizar</button>
                 </div>
-                <div id="syncFeedback" class="feedback"></div>
 
                 <label for="link">Link do Anúncio:</label>
-                <div class="field-row">
+                <div style="display: flex; align-items: center;">
                     <input type="url" id="link" name="link">
-                    <button type="button" onclick="pasteFromClipboard('link')" class="btn-small">Colar</button>
+                    <button type="button" onclick="pasteFromClipboard('link')">Colar</button>
                 </div>
 
                 <label for="infoImovel">Informações do Imóvel:</label>
-                <div class="field-row">
+                <div style="display: flex; align-items: center;">
                     <textarea id="infoImovel" name="infoImovel"></textarea>
-                    <button type="button" onclick="pasteFromClipboard('infoImovel')" class="btn-small">Colar</button>
+                    <button type="button" onclick="pasteFromClipboard('infoImovel')">Colar</button>
                 </div>
 
                 <label for="coordenadas">Coordenadas:</label>
@@ -224,75 +338,127 @@
                     <option value="3">Comercial Pólo Primário</option>
                 </select>
 
-                <label for="imagemInput">Capturar Imagem do Terreno:</label>
-                <div class="image-buttons">
-                    <button type="button" onclick="document.getElementById('imagemInput').click()">Capturar Imagem</button>
-                    <button type="button" onclick="removerImagem()" id="btnRemoverImagem" style="display: none;">Remover Imagem</button>
+                <!-- Captura de Imagem -->
+                <div class="image-capture-section">
+                    <label>Captura de Imagem do Terreno:</label>
+                    <div class="capture-methods">
+                        <button type="button" onclick="capturarTela()">A: Print Screen + Recorte (Ctrl+Shift+X)</button>
+                        <button type="button" onclick="document.getElementById('fileUpload').click()">B: Upload Direto</button>
+                        <button type="button" onclick="alert('Pressione Ctrl+V para colar uma imagem da área de transferência')">C: Colar (Ctrl+V)</button>
+                    </div>
+                    <input type="file" id="fileUpload" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileUpload').click()">
+                        Arraste uma imagem aqui ou clique para selecionar
+                    </div>
+                    <div class="image-preview" id="imagePreview" style="display:none;">
+                        <img id="previewImg" src="" alt="Preview da Imagem">
+                        <button type="button" class="btn-remove" onclick="removerImagem()">Remover Imagem</button>
+                    </div>
+                    <div class="image-status" id="imageStatus" style="display:none;">
+                        ✓ Imagem capturada e pronta para envio
+                    </div>
                 </div>
-                <input type="file" id="imagemInput" accept="image/*" capture="environment" style="display: none;" onchange="capturarImagem(event)">
-                <img id="imagemPreview" alt="Pré-visualização da imagem">
-                <div id="imagemFeedback" class="feedback"></div>
 
                 <button type="submit">Enviar Dados</button>
-                <div id="submitFeedback" class="feedback"></div>
             </form>
         </div>
     </div>
 
-    <script>
-        // Variáveis globais para imagem
-        let imagemBase64 = null;
-        let imagemNome = null;
+    <!-- Editor de Recorte -->
+    <div class="crop-overlay" id="cropOverlay">
+        <div class="crop-container">
+            <h3>Editor de Recorte</h3>
+            <p>Arraste o mouse sobre a imagem para selecionar a área de recorte</p>
+            <div class="crop-canvas-wrapper">
+                <canvas id="cropCanvas"></canvas>
+            </div>
+            <div class="crop-buttons">
+                <button type="button" class="btn-confirm" onclick="confirmarRecorte()">Confirmar Recorte</button>
+                <button type="button" class="btn-full" onclick="usarImagemCompleta()">Usar Imagem Completa</button>
+                <button type="button" class="btn-cancel" onclick="cancelarRecorte()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-        // No carregamento da página, carregar planilhas existentes e inicializar mapas
+    <script>
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
+        let imagemBase64 = null;
+        let originalImage = null;
+        let cropCanvas = null;
+        let cropCtx = null;
+        let cropStartX = 0, cropStartY = 0, cropEndX = 0, cropEndY = 0;
+        let isCropping = false;
+        let cropScale = 1;
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         window.onload = function() {
             loadPlanilhas();
             initMapCentral();
             initMapTerreno();
+            initCropCanvas();
+            initDragDrop();
+            initKeyboardShortcuts();
+            initPasteHandler();
+
+            var ultimoNumero = localStorage.getItem('ultimoNumero');
+            if (ultimoNumero) {
+                document.getElementById('numeroDado').value = ultimoNumero;
+            }
         };
 
+        // ============================================
+        // CARREGAR PLANILHAS
+        // ============================================
         function loadPlanilhas() {
-            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRuuja7Tveui7EINl-hHXdHtK9JI8qLnx4bELPAtRQcstNNzN0PMt7_KfsSjuuubl40xLUWaGzyl1AY/pub?gid=0&single=true&output=csv';
-            
+            var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRuuja7Tveui7EINl-hHXdHtK9JI8qLnx4bELPAtRQcstNNzN0PMt7_KfsSjuuubl40xLUWaGzyl1AY/pub?gid=0&single=true&output=csv';
+
             fetch(url)
-                .then(response => response.text())
-                .then(csv => {
-                    const linhas = csv.split('\n');
-                    const select = document.getElementById('planilhaNome');
-                    select.innerHTML = ''; // Limpa o "Carregando..."
+                .then(function(response) { return response.text(); })
+                .then(function(csv) {
+                    var linhas = csv.split('\n');
+                    var select = document.getElementById('planilhaNome');
+                    select.innerHTML = '';
 
-                    linhas.forEach(linha => {
-                        const colunas = linha.split(',');
+                    linhas.forEach(function(linha) {
+                        var colunas = linha.split(',');
                         if (colunas.length === 3) {
-                            const nome = colunas[0].trim();
-                            const folderId = colunas[1].trim();
-                            const spreadsheetId = colunas[2].trim();
+                            var nome = colunas[0].trim();
+                            var folderId = colunas[1].trim();
+                            var spreadsheetId = colunas[2].trim();
 
-                            const option = document.createElement('option');
-                            option.value = `${folderId},${spreadsheetId}`; // Armazena ambos os IDs
+                            var option = document.createElement('option');
+                            option.value = folderId + ',' + spreadsheetId;
                             option.textContent = nome;
                             select.appendChild(option);
                         }
                     });
                 })
-                .catch(error => {
+                .catch(function(error) {
                     console.error('Erro ao carregar planilhas:', error);
-                    const select = document.getElementById('planilhaNome');
+                    var select = document.getElementById('planilhaNome');
                     select.innerHTML = '<option value="">Erro ao carregar</option>';
                 });
         }
 
-        // Ao selecionar uma planilha, preencher IDs
         document.getElementById('planilhaNome').addEventListener('change', function() {
-            const [folderId, spreadsheetId] = this.value.split(',');
-            document.getElementById('folderId').value = folderId || '';
-            document.getElementById('spreadsheetId').value = spreadsheetId || '';
+            var parts = this.value.split(',');
+            var folderId = parts[0] || '';
+            var spreadsheetId = parts[1] || '';
+            document.getElementById('folderId').value = folderId;
+            document.getElementById('spreadsheetId').value = spreadsheetId;
         });
 
+        // ============================================
+        // NAVEGAÇÃO ENTRE PÁGINAS
+        // ============================================
         function goToPage2() {
-            const folderId = document.getElementById('folderId').value;
-            const spreadsheetId = document.getElementById('spreadsheetId').value;
-            const centralLocation = document.getElementById('centralLocation').value;
+            var folderId = document.getElementById('folderId').value;
+            var spreadsheetId = document.getElementById('spreadsheetId').value;
+            var centralLocation = document.getElementById('centralLocation').value;
 
             if (folderId && spreadsheetId && centralLocation) {
                 localStorage.setItem('folderId', folderId);
@@ -306,160 +472,89 @@
             }
         }
 
-        // Função para sincronizar o número do terreno via webhook
-        function sincronizarNumero() {
-            const spreadsheetId = document.getElementById('spreadsheetId').value || localStorage.getItem('spreadsheetId');
-            const feedback = document.getElementById('syncFeedback');
-            const btn = document.getElementById('btnSincronizar');
-
+        // ============================================
+        // SINCRONIZAÇÃO DE NÚMERO
+        // ============================================
+        async function sincronizarNumero() {
+            var spreadsheetId = localStorage.getItem('spreadsheetId');
             if (!spreadsheetId) {
-                feedback.textContent = 'Erro: ID da planilha não encontrado. Volte à página 1 e selecione uma planilha.';
-                feedback.className = 'feedback error';
+                alert('ID da planilha não encontrado. Volte à página 1 e configure.');
                 return;
             }
 
-            btn.disabled = true;
+            var btn = document.querySelector('.btn-sync');
+            var originalText = btn.textContent;
             btn.textContent = 'Sincronizando...';
-            feedback.textContent = 'Sincronizando número com a planilha...';
-            feedback.className = 'feedback info';
+            btn.disabled = true;
 
-            fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/numerodado', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ spreadsheetId: spreadsheetId })
-            })
-            .then(response => {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                }
-                return response.text().then(text => {
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        return { numero: text.trim() };
-                    }
+            try {
+                var response = await fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook-test/numerodado', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/'
+                    },
+                    body: JSON.stringify({ spreadsheetId: spreadsheetId })
                 });
-            })
-            .then(data => {
-                let numero = null;
 
-                if (typeof data === 'number') {
+                var data = await response.();
+
+                var numero = null;
+                if (data.numero !== undefined) {
+                    numero = data.numero;
+                } else if (data.numeroDado !== undefined) {
+                    numero = data.numeroDado;
+                } else if (data.number !== undefined) {
+                    numero = data.number;
+                } else if (typeof data === 'number') {
                     numero = data;
-                } else if (typeof data === 'string') {
-                    numero = data.trim();
                 } else if (Array.isArray(data) && data.length > 0) {
-                    const item = data[0];
-                    if (typeof item === 'object' && item !== null) {
-                        numero = item.numero || item.numeroDado || item.number || item.value || item.numerodado || extractNumberFromObject(item);
-                    } else if (typeof item === 'number') {
-                        numero = item;
-                    }
-                } else if (typeof data === 'object' && data !== null) {
-                    numero = data.numero || data.numeroDado || data.number || data.value || data.numerodado || extractNumberFromObject(data);
+                    numero = data[0].numero || data[0].numeroDado || data[0].number;
                 }
 
-                if (numero !== null && numero !== undefined && numero !== '') {
+                if (numero !== null && numero !== undefined) {
                     document.getElementById('numeroDado').value = numero;
-                    feedback.textContent = '✓ Número sincronizado com sucesso: ' + numero;
-                    feedback.className = 'feedback success';
+                    localStorage.setItem('ultimoNumero', numero);
+                    console.log('Número sincronizado:', numero);
                 } else {
-                    feedback.textContent = '⚠ Resposta recebida, mas não foi possível extrair o número. Verifique o formato da resposta do webhook.';
-                    feedback.className = 'feedback warning';
-                    console.log('Resposta do webhook:', data);
+                    console.warn('Resposta do webhook:', data);
+                    alert('Número não encontrado na resposta do webhook.');
                 }
-            })
-            .catch(error => {
-                console.error('Erro ao sincronizar:', error);
-                feedback.textContent = '✗ Erro ao sincronizar número. Verifique sua conexão e se o webhook está ativo.';
-                feedback.className = 'feedback error';
-            })
-            .finally(() => {
+            } catch (error) {
+                console.error('Erro ao sincronizar número:', error);
+                alert('Erro ao sincronizar número: ' + error.message);
+            } finally {
+                btn.textContent = originalText;
                 btn.disabled = false;
-                btn.textContent = 'Sincronizar';
-            });
-        }
-
-        // Função auxiliar para extrair número de um objeto
-        function extractNumberFromObject(obj) {
-            for (const key in obj) {
-                if (typeof obj[key] === 'number') {
-                    return obj[key];
-                }
-                if (typeof obj[key] === 'string' && !isNaN(parseInt(obj[key], 10))) {
-                    return obj[key];
-                }
             }
-            return null;
         }
 
-        // Função para capturar imagem e converter em base64
-        function capturarImagem(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagemBase64 = e.target.result;
-                atualizarNomeImagem();
-
-                const preview = document.getElementById('imagemPreview');
-                preview.src = imagemBase64;
-                preview.style.display = 'block';
-
-                document.getElementById('btnRemoverImagem').style.display = 'inline-block';
-
-                const feedback = document.getElementById('imagemFeedback');
-                feedback.textContent = '✓ Imagem capturada: ' + imagemNome;
-                feedback.className = 'feedback success';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Função para atualizar o nome da imagem baseado no número do terreno
-        function atualizarNomeImagem() {
-            const numeroDado = document.getElementById('numeroDado').value;
-            const numeroFormatado = String(numeroDado).padStart(3, '0');
-            const ext = imagemBase64 ? imagemBase64.match(/data:image\/(\w+);/)[1] : 'png';
-            imagemNome = 'terreno_' + numeroFormatado + '.' + ext;
-        }
-
-        // Função para remover a imagem capturada
-        function removerImagem() {
-            imagemBase64 = null;
-            imagemNome = null;
-            document.getElementById('imagemInput').value = '';
-            document.getElementById('imagemPreview').style.display = 'none';
-            document.getElementById('btnRemoverImagem').style.display = 'none';
-            document.getElementById('imagemFeedback').textContent = '';
-            document.getElementById('imagemFeedback').className = 'feedback';
-        }
-
+        // ============================================
+        // ENVIO DO FORMULÁRIO
+        // ============================================
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const numeroDado = document.getElementById('numeroDado').value;
-            const link = document.getElementById('link').value;
-            const infoImovel = document.getElementById('infoImovel').value;
-            const coordenadas = document.getElementById('coordenadas').value;
-            const tipoRua = document.getElementById('tipoRua').value;
-            const esquina = document.getElementById('esquina').value;
-            const vocacao = document.getElementById('vocacao').value;
-            const centralLocation = localStorage.getItem('centralLocation');
+            var numeroDado = document.getElementById('numeroDado').value;
+            var link = document.getElementById('link').value;
+            var infoImovel = document.getElementById('infoImovel').value;
+            var coordenadas = document.getElementById('coordenadas').value;
+            var tipoRua = document.getElementById('tipoRua').value;
+            var esquina = document.getElementById('esquina').value;
+            var vocacao = document.getElementById('vocacao').value;
+            var centralLocation = localStorage.getItem('centralLocation');
 
             if (!link && !infoImovel) {
                 alert('Por favor, preencha o Link do Anúncio ou as Informações do Imóvel.');
                 return;
             }
 
-            const folderId = localStorage.getItem('folderId');
-            const spreadsheetId = localStorage.getItem('spreadsheetId');
+            var folderId = localStorage.getItem('folderId');
+            var spreadsheetId = localStorage.getItem('spreadsheetId');
 
-            // Calcular distância entre localizações
-            const distancia = calcularDistancia(centralLocation, coordenadas);
+            var distancia = calcularDistancia(centralLocation, coordenadas);
 
-            const dadosParaEnviar = {
+            var imagemNome = imagemBase64 ? 'terreno_' + String(numeroDado).padStart(3, '0') + '.png' : '';
+
+            var dadosParaEnviar = {
                 folderId: folderId,
                 spreadsheetId: spreadsheetId,
                 numeroDado: numeroDado,
@@ -469,87 +564,70 @@
                 tipoRua: parseInt(tipoRua),
                 esquina: parseInt(esquina),
                 vocacao: parseInt(vocacao),
-                distancia: distancia.toFixed(2)
+                distancia: distancia.toFixed(2),
+                imagemBase64: imagemBase64 || '',
+                imagemNome: imagemNome
             };
-
-            // Adicionar imagem se houver
-            if (imagemBase64) {
-                atualizarNomeImagem();
-                dadosParaEnviar.imagemBase64 = imagemBase64;
-                dadosParaEnviar.imagemNome = imagemNome;
-            }
-
-            const submitFeedback = document.getElementById('submitFeedback');
-            submitFeedback.textContent = 'Enviando dados...';
-            submitFeedback.className = 'feedback info';
 
             fetch('https://bleatingfrilledlizard-n8n.cloudfy.live/webhook/addterreno', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/'
                 },
                 body: JSON.stringify(dadosParaEnviar)
             })
-            .then(response => {
+            .then(function(response) {
                 console.log('Resposta recebida');
+                alert('Dados enviados com sucesso!');
 
-                // Construir mensagem de sucesso
-                let mensagens = ['✓ Dados enviados com sucesso!'];
-
-                if (imagemBase64) {
-                    mensagens.push('✓ Imagem enviada: ' + imagemNome);
-                }
-
-                // Incremento automático do número
-                const numeroAtual = parseInt(numeroDado, 10);
+                var numeroAtual = parseInt(numeroDado);
                 if (!isNaN(numeroAtual)) {
-                    const proximoNumero = numeroAtual + 1;
+                    var proximoNumero = numeroAtual + 1;
                     document.getElementById('numeroDado').value = proximoNumero;
-                    mensagens.push('✓ Próximo número preenchido automaticamente: ' + proximoNumero);
+                    localStorage.setItem('ultimoNumero', proximoNumero);
+                    console.log('Próximo número:', proximoNumero);
                 }
-
-                // Limpar imagem após envio
-                removerImagem();
-
-                submitFeedback.innerHTML = mensagens.join('<br>');
-                submitFeedback.className = 'feedback success';
-
-                alert(mensagens.join('\n'));
             })
-            .catch((error) => {
+            .catch(function(error) {
                 console.error('Erro:', error);
-                submitFeedback.textContent = '✗ Erro ao enviar os dados. Por favor, tente novamente.';
-                submitFeedback.className = 'feedback error';
                 alert('Erro ao enviar os dados. Por favor, tente novamente.');
             });
         });
 
-        // Calcular distância entre duas coordenadas
+        // ============================================
+        // CÁLCULO DE DISTÂNCIA
+        // ============================================
         function calcularDistancia(centralLocation, coordenadas) {
-            const [lat1, lon1] = centralLocation.split(',').map(Number);
-            const [lat2, lon2] = coordenadas.split(',').map(Number);
+            var parts1 = centralLocation.split(',').map(Number);
+            var parts2 = coordenadas.split(',').map(Number);
+            var lat1 = parts1[0];
+            var lon1 = parts1[1];
+            var lat2 = parts2[0];
+            var lon2 = parts2[1];
 
-            const R = 6371; // Raio da Terra em km
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            const distancia = R * c; // Distância em km
+            var R = 6371;
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLon = (lon2 - lon1) * Math.PI / 180;
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var distancia = R * c;
 
             return distancia;
         }
 
-        // Inicializar e configurar o mapa para Localização Central com campo de pesquisa
+        // ============================================
+        // MAPAS
+        // ============================================
         function initMapCentral() {
-            const mapCentral = new google.maps.Map(document.getElementById("mapCentral"), {
+            var mapCentral = new google.maps.Map(document.getElementById("mapCentral"), {
                 center: { lat: -25.394552444520578, lng: -51.4582512931166 },
-                zoom: 13,
+                zoom: 13
             });
 
-            const input = document.createElement("input");
+            var input = document.createElement("input");
             input.id = "pac-input-central";
             input.className = "controls";
             input.type = "text";
@@ -557,39 +635,30 @@
 
             mapCentral.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-            const searchBox = new google.maps.places.SearchBox(input);
+            var searchBox = new google.maps.places.SearchBox(input);
 
-            mapCentral.addListener("bounds_changed", () => {
+            mapCentral.addListener("bounds_changed", function() {
                 searchBox.setBounds(mapCentral.getBounds());
             });
 
-            let markers = [];
+            var markers = [];
 
-            searchBox.addListener("places_changed", () => {
-                const places = searchBox.getPlaces();
+            searchBox.addListener("places_changed", function() {
+                var places = searchBox.getPlaces();
+                if (places.length == 0) return;
 
-                if (places.length == 0) {
-                    return;
-                }
-
-                markers.forEach((marker) => {
-                    marker.setMap(null);
-                });
+                markers.forEach(function(marker) { marker.setMap(null); });
                 markers = [];
 
-                const bounds = new google.maps.LatLngBounds();
-                places.forEach((place) => {
-                    if (!place.geometry || !place.geometry.location) {
-                        console.log("Returned place contains no geometry");
-                        return;
-                    }
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    if (!place.geometry || !place.geometry.location) return;
 
-                    const marker = new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         map: mapCentral,
                         title: place.name,
-                        position: place.geometry.location,
+                        position: place.geometry.location
                     });
-
                     markers.push(marker);
 
                     if (place.geometry.viewport) {
@@ -603,20 +672,19 @@
                 mapCentral.fitBounds(bounds);
             });
 
-            mapCentral.addListener("click", (mapsMouseEvent) => {
-                const coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
+            mapCentral.addListener("click", function(mapsMouseEvent) {
+                var coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
                 document.getElementById('centralLocation').value = coords;
             });
         }
 
-        // Inicializar e configurar o mapa para o Terreno
         function initMapTerreno() {
-            const mapTerreno = new google.maps.Map(document.getElementById("mapTerreno"), {
+            var mapTerreno = new google.maps.Map(document.getElementById("mapTerreno"), {
                 center: { lat: -25.394552444520578, lng: -51.4582512931166 },
-                zoom: 13,
+                zoom: 13
             });
 
-            const input = document.createElement("input");
+            var input = document.createElement("input");
             input.id = "pac-input-terreno";
             input.className = "controls";
             input.type = "text";
@@ -624,39 +692,30 @@
 
             mapTerreno.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-            const searchBox = new google.maps.places.SearchBox(input);
+            var searchBox = new google.maps.places.SearchBox(input);
 
-            mapTerreno.addListener("bounds_changed", () => {
+            mapTerreno.addListener("bounds_changed", function() {
                 searchBox.setBounds(mapTerreno.getBounds());
             });
 
-            let markers = [];
+            var markers = [];
 
-            searchBox.addListener("places_changed", () => {
-                const places = searchBox.getPlaces();
+            searchBox.addListener("places_changed", function() {
+                var places = searchBox.getPlaces();
+                if (places.length == 0) return;
 
-                if (places.length == 0) {
-                    return;
-                }
-
-                markers.forEach((marker) => {
-                    marker.setMap(null);
-                });
+                markers.forEach(function(marker) { marker.setMap(null); });
                 markers = [];
 
-                const bounds = new google.maps.LatLngBounds();
-                places.forEach((place) => {
-                    if (!place.geometry || !place.geometry.location) {
-                        console.log("Returned place contains no geometry");
-                        return;
-                    }
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    if (!place.geometry || !place.geometry.location) return;
 
-                    const marker = new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         map: mapTerreno,
                         title: place.name,
-                        position: place.geometry.location,
+                        position: place.geometry.location
                     });
-
                     markers.push(marker);
 
                     if (place.geometry.viewport) {
@@ -670,21 +729,20 @@
                 mapTerreno.fitBounds(bounds);
             });
 
-            mapTerreno.addListener("click", (mapsMouseEvent) => {
-                const coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
+            mapTerreno.addListener("click", function(mapsMouseEvent) {
+                var coords = mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng();
                 document.getElementById('coordenadas').value = coords;
             });
         }
 
-        // Função para obter a localização atual do usuário
         function getCurrentLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const coords = lat + ',' + lng;
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    var coords = lat + ',' + lng;
 
-                    const mapTerreno = new google.maps.Map(document.getElementById("mapTerreno"));
+                    var mapTerreno = new google.maps.Map(document.getElementById("mapTerreno"));
                     mapTerreno.setCenter({ lat: lat, lng: lng });
 
                     new google.maps.Marker({
@@ -701,15 +759,321 @@
             }
         }
 
-        // Função para colar texto da área de transferência
+        // ============================================
+        // COLAR TEXTO
+        // ============================================
         async function pasteFromClipboard(fieldId) {
             try {
-                const text = await navigator.clipboard.readText();
+                var text = await navigator.clipboard.readText();
                 document.getElementById(fieldId).value = text;
             } catch (err) {
                 console.error('Falha ao colar texto: ', err);
                 alert('Falha ao colar texto. Verifique as permissões do navegador.');
             }
+        }
+
+        // ============================================
+        // CAPTURA DE IMAGEM - MÉTODO A: PRINT SCREEN (Ctrl+Shift+X)
+        // ============================================
+        async function capturarTela() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                alert('Captura de tela não suportada neste navegador. Use Print Screen do teclado e cole com Ctrl+V.');
+                return;
+            }
+
+            try {
+                var stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                var video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                video.onloadedmetadata = function() {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    stream.getTracks().forEach(function(track) { track.stop(); });
+                    abrirEditorRecorte(canvas.toDataURL('image/png'));
+                };
+            } catch (err) {
+                console.error('Erro ao capturar tela:', err);
+                alert('Erro ao capturar tela. Você pode usar Print Screen do teclado e colar com Ctrl+V.');
+            }
+        }
+
+        // ============================================
+        // CAPTURA DE IMAGEM - MÉTODO B: UPLOAD / DRAG & DROP
+        // ============================================
+        function handleFileUpload(event) {
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processarArquivoImagem(file);
+            }
+            event.target.value = '';
+        }
+
+        function processarArquivoImagem(file) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                abrirEditorRecorte(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initDragDrop() {
+            var dropZone = document.getElementById('dropZone');
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', function(e) {
+                this.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                var files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    processarArquivoImagem(files[0]);
+                } else {
+                    alert('Por favor, solte um arquivo de imagem válido.');
+                }
+            });
+        }
+
+        // ============================================
+        // CAPTURA DE IMAGEM - MÉTODO C: COLAR (Ctrl+V)
+        // ============================================
+        function initPasteHandler() {
+            document.addEventListener('paste', function(e) {
+                if (!document.getElementById('page2').classList.contains('active')) return;
+
+                var items = e.clipboardData.items;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].type.startsWith('image/')) {
+                        e.preventDefault();
+                        var blob = items[i].getAsFile();
+                        var reader = new FileReader();
+                        reader.onload = function(event) {
+                            abrirEditorRecorte(event.target.result);
+                        };
+                        reader.readAsDataURL(blob);
+                        return;
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // ATALHOS DE TECLADO
+        // ============================================
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === 'x')) {
+                    e.preventDefault();
+                    if (document.getElementById('page2').classList.contains('active')) {
+                        capturarTela();
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // EDITOR DE RECORTE VISUAL
+        // ============================================
+        function abrirEditorRecorte(dataUrl) {
+            var img = new Image();
+            img.onload = function() {
+                originalImage = img;
+                cropCanvas = document.getElementById('cropCanvas');
+                cropCtx = cropCanvas.getContext('2d');
+
+                var maxWidth = 700;
+                var maxHeight = 500;
+                cropScale = 1;
+
+                if (img.width > maxWidth) cropScale = maxWidth / img.width;
+                if (img.height * cropScale > maxHeight) cropScale = maxHeight / img.height;
+
+                cropCanvas.width = img.width * cropScale;
+                cropCanvas.height = img.height * cropScale;
+
+                cropCtx.drawImage(img, 0, 0, cropCanvas.width, cropCanvas.height);
+
+                cropStartX = 0;
+                cropStartY = 0;
+                cropEndX = 0;
+                cropEndY = 0;
+                isCropping = false;
+
+                document.getElementById('cropOverlay').classList.add('active');
+            };
+            img.src = dataUrl;
+        }
+
+        function initCropCanvas() {
+            var canvas = document.getElementById('cropCanvas');
+
+            canvas.addEventListener('mousedown', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var scaleX = canvas.width / rect.width;
+                var scaleY = canvas.height / rect.height;
+                cropStartX = (e.clientX - rect.left) * scaleX;
+                cropStartY = (e.clientY - rect.top) * scaleY;
+                cropEndX = cropStartX;
+                cropEndY = cropStartY;
+                isCropping = true;
+            });
+
+            canvas.addEventListener('mousemove', function(e) {
+                if (!isCropping) return;
+
+                var rect = canvas.getBoundingClientRect();
+                var scaleX = canvas.width / rect.width;
+                var scaleY = canvas.height / rect.height;
+                cropEndX = (e.clientX - rect.left) * scaleX;
+                cropEndY = (e.clientY - rect.top) * scaleY;
+
+                cropCtx.drawImage(originalImage, 0, 0, cropCanvas.width, cropCanvas.height);
+
+                var x = Math.min(cropStartX, cropEndX);
+                var y = Math.min(cropStartY, cropEndY);
+                var w = Math.abs(cropEndX - cropStartX);
+                var h = Math.abs(cropEndY - cropStartY);
+
+                cropCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+
+                cropCtx.clearRect(x, y, w, h);
+                cropCtx.drawImage(originalImage,
+                    x / cropScale, y / cropScale, w / cropScale, h / cropScale,
+                    x, y, w, h
+                );
+
+                cropCtx.strokeStyle = '#007BFF';
+                cropCtx.lineWidth = 2;
+                cropCtx.strokeRect(x, y, w, h);
+            });
+
+            canvas.addEventListener('mouseup', function(e) {
+                isCropping = false;
+            });
+
+            canvas.addEventListener('mouseleave', function(e) {
+                isCropping = false;
+            });
+
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                var touch = e.touches[0];
+                var rect = canvas.getBoundingClientRect();
+                var scaleX = canvas.width / rect.width;
+                var scaleY = canvas.height / rect.height;
+                cropStartX = (touch.clientX - rect.left) * scaleX;
+                cropStartY = (touch.clientY - rect.top) * scaleY;
+                cropEndX = cropStartX;
+                cropEndY = cropStartY;
+                isCropping = true;
+            });
+
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (!isCropping) return;
+
+                var touch = e.touches[0];
+                var rect = canvas.getBoundingClientRect();
+                var scaleX = canvas.width / rect.width;
+                var scaleY = canvas.height / rect.height;
+                cropEndX = (touch.clientX - rect.left) * scaleX;
+                cropEndY = (touch.clientY - rect.top) * scaleY;
+
+                cropCtx.drawImage(originalImage, 0, 0, cropCanvas.width, cropCanvas.height);
+
+                var x = Math.min(cropStartX, cropEndX);
+                var y = Math.min(cropStartY, cropEndY);
+                var w = Math.abs(cropEndX - cropStartX);
+                var h = Math.abs(cropEndY - cropStartY);
+
+                cropCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+
+                cropCtx.clearRect(x, y, w, h);
+                cropCtx.drawImage(originalImage,
+                    x / cropScale, y / cropScale, w / cropScale, h / cropScale,
+                    x, y, w, h
+                );
+
+                cropCtx.strokeStyle = '#007BFF';
+                cropCtx.lineWidth = 2;
+                cropCtx.strokeRect(x, y, w, h);
+            });
+
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                isCropping = false;
+            });
+        }
+
+        function confirmarRecorte() {
+            if (cropEndX === cropStartX || cropEndY === cropStartY) {
+                alert('Por favor, selecione uma área para recortar arrastando o mouse sobre a imagem.');
+                return;
+            }
+
+            var x = Math.min(cropStartX, cropEndX) / cropScale;
+            var y = Math.min(cropStartY, cropEndY) / cropScale;
+            var w = Math.abs(cropEndX - cropStartX) / cropScale;
+            var h = Math.abs(cropEndY - cropStartY) / cropScale;
+
+            var outputCanvas = document.createElement('canvas');
+            outputCanvas.width = Math.round(w);
+            outputCanvas.height = Math.round(h);
+            var outputCtx = outputCanvas.getContext('2d');
+            outputCtx.drawImage(originalImage, x, y, w, h, 0, 0, w, h);
+
+            imagemBase64 = outputCanvas.toDataURL('image/png');
+            mostrarPreview(imagemBase64);
+
+            document.getElementById('cropOverlay').classList.remove('active');
+        }
+
+        function usarImagemCompleta() {
+            if (!originalImage) return;
+
+            var outputCanvas = document.createElement('canvas');
+            outputCanvas.width = originalImage.width;
+            outputCanvas.height = originalImage.height;
+            var outputCtx = outputCanvas.getContext('2d');
+            outputCtx.drawImage(originalImage, 0, 0);
+
+            imagemBase64 = outputCanvas.toDataURL('image/png');
+            mostrarPreview(imagemBase64);
+
+            document.getElementById('cropOverlay').classList.remove('active');
+        }
+
+        function cancelarRecorte() {
+            document.getElementById('cropOverlay').classList.remove('active');
+            isCropping = false;
+        }
+
+        // ============================================
+        // PREVIEW E REMOÇÃO DE IMAGEM
+        // ============================================
+        function mostrarPreview(base64) {
+            document.getElementById('previewImg').src = base64;
+            document.getElementById('imagePreview').style.display = 'block';
+            document.getElementById('imageStatus').style.display = 'block';
+        }
+
+        function removerImagem() {
+            imagemBase64 = null;
+            document.getElementById('previewImg').src = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageStatus').style.display = 'none';
         }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAryf15DN6a0iOH72GMB0IaS3qbL44E8G8&libraries=places&callback=initMapCentral" async defer></script>
